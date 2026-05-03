@@ -18,9 +18,26 @@ public class EmptyState extends VBox {
         setAlignment(Pos.CENTER);
         setSpacing(12);
 
-        var fontIcon = new FontIcon(icon);
-        fontIcon.setIconSize(48);
-        fontIcon.setIconColor(javafx.scene.paint.Paint.valueOf("#D1D5DB"));
+        javafx.scene.Node graphicNode = null;
+        try {
+            var imageStream = getClass().getResourceAsStream("/images/sticker_empty_box.png");
+            if (imageStream != null) {
+                var image = new javafx.scene.image.Image(imageStream);
+                var imageView = new javafx.scene.image.ImageView(image);
+                imageView.setFitHeight(120);
+                imageView.setPreserveRatio(true);
+                graphicNode = imageView;
+            }
+        } catch (Exception e) {
+            // fallback
+        }
+
+        if (graphicNode == null) {
+            var fontIcon = new FontIcon(icon);
+            fontIcon.setIconSize(48);
+            fontIcon.setIconColor(javafx.scene.paint.Paint.valueOf("#D1D5DB"));
+            graphicNode = fontIcon;
+        }
 
         var titleLabel = new Label(title);
         titleLabel.getStyleClass().add("empty-state-title");
@@ -29,7 +46,7 @@ public class EmptyState extends VBox {
         subtitleLabel.getStyleClass().add("empty-state-subtitle");
         subtitleLabel.setWrapText(true);
 
-        getChildren().addAll(fontIcon, titleLabel, subtitleLabel);
+        getChildren().addAll(graphicNode, titleLabel, subtitleLabel);
 
         if (buttonText != null && onAction != null) {
             var btn = new Button(buttonText);

@@ -13,8 +13,33 @@ import org.kordamp.ikonli.bytedance.BytedanceIconsRegularMZ;
 public class HRDashboard extends VBox {
     public HRDashboard() {
         setSpacing(24);
-        var title = new Label("Dashboard");
-        title.getStyleClass().add("display-heading");
+        var welcomeBanner = new HBox(24);
+        welcomeBanner.setStyle("-fx-background-color: linear-gradient(to right, #4F46E5, #3B82F6); -fx-background-radius: 12; -fx-padding: 32;");
+        welcomeBanner.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+        
+        var welcomeText = new VBox(8);
+        var welcomeTitle = new Label("Welcome to HR Analytics");
+        welcomeTitle.setStyle("-fx-font-family: 'Inter', sans-serif; -fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: white;");
+        var welcomeSub = new Label("Here's what's happening in your organization today.");
+        welcomeSub.setStyle("-fx-font-family: 'Inter', sans-serif; -fx-font-size: 14px; -fx-text-fill: #E0E7FF;");
+        welcomeText.getChildren().addAll(welcomeTitle, welcomeSub);
+        
+        javafx.scene.layout.HBox.setHgrow(welcomeText, javafx.scene.layout.Priority.ALWAYS);
+        
+        try {
+            var imageStream = getClass().getResourceAsStream("/images/sticker_dashboard.png");
+            if (imageStream != null) {
+                var image = new javafx.scene.image.Image(imageStream);
+                var imageView = new javafx.scene.image.ImageView(image);
+                imageView.setFitHeight(120);
+                imageView.setPreserveRatio(true);
+                welcomeBanner.getChildren().addAll(welcomeText, imageView);
+            } else {
+                welcomeBanner.getChildren().add(welcomeText);
+            }
+        } catch (Exception e) {
+            welcomeBanner.getChildren().add(welcomeText);
+        }
 
         var statsRow = new HBox(16);
         var employees = new StatCard("Employees", "—", BytedanceIconsRegularAL.EVERY_USER, "#6366F1");
@@ -24,7 +49,7 @@ public class HRDashboard extends VBox {
         statsRow.getChildren().addAll(employees, departments, leaves, payroll);
 
         var skeleton = new SkeletonPane(3);
-        getChildren().addAll(title, statsRow, skeleton);
+        getChildren().addAll(welcomeBanner, statsRow, skeleton);
 
         var api = ApiClient.getInstance();
         api.getRaw("/hr/dashboard").thenAccept(b -> Platform.runLater(() -> {

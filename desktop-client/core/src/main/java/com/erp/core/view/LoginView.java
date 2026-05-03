@@ -147,16 +147,46 @@ public class LoginView extends StackPane {
         card.getChildren().addAll(lockIcon, title, subtitle, spacer,
                 usernamePane, passwordPane, errorLabel, loginBtn, spinner, demoHint);
 
-        // Entry animation
-        card.setScaleX(0.95);
-        card.setScaleY(0.95);
-        card.setOpacity(0);
+        // Illustration Box
+        var illustrationBox = new VBox(16);
+        illustrationBox.setAlignment(Pos.CENTER);
+        try {
+            var imageStream = getClass().getResourceAsStream("/images/sticker_login.png");
+            if (imageStream != null) {
+                var image = new javafx.scene.image.Image(imageStream);
+                var imageView = new javafx.scene.image.ImageView(image);
+                imageView.setFitWidth(320);
+                imageView.setPreserveRatio(true);
+                
+                var brandingLabel = new Label("Enterprise Ready");
+                brandingLabel.getStyleClass().add("heading-2");
+                
+                var brandingSub = new Label("Secure, reliable, and professional.");
+                brandingSub.getStyleClass().add("body-muted");
+                
+                illustrationBox.getChildren().addAll(imageView, brandingLabel, brandingSub);
+            }
+        } catch (Exception e) {
+            System.err.println("Failed to load login sticker: " + e.getMessage());
+        }
 
-        var fadeIn = new FadeTransition(Duration.millis(400), card);
+        var mainContainer = new HBox(80);
+        mainContainer.setAlignment(Pos.CENTER);
+        if (!illustrationBox.getChildren().isEmpty()) {
+            mainContainer.getChildren().add(illustrationBox);
+        }
+        mainContainer.getChildren().add(card);
+
+        // Entry animation
+        mainContainer.setScaleX(0.95);
+        mainContainer.setScaleY(0.95);
+        mainContainer.setOpacity(0);
+
+        var fadeIn = new FadeTransition(Duration.millis(400), mainContainer);
         fadeIn.setFromValue(0);
         fadeIn.setToValue(1);
 
-        var scaleIn = new ScaleTransition(Duration.millis(400), card);
+        var scaleIn = new ScaleTransition(Duration.millis(400), mainContainer);
         scaleIn.setFromX(0.95);
         scaleIn.setFromY(0.95);
         scaleIn.setToX(1.0);
@@ -165,7 +195,7 @@ public class LoginView extends StackPane {
         fadeIn.play();
         scaleIn.play();
 
-        getChildren().add(card);
+        getChildren().add(mainContainer);
     }
 
     private void showError(Label errorLabel, String message) {
