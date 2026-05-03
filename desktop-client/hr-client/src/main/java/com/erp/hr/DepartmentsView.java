@@ -10,8 +10,8 @@ import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid;
 import org.kordamp.ikonli.javafx.FontIcon;
+import org.kordamp.ikonli.bytedance.BytedanceIconsRegularAL;
 import java.util.Map;
 
 public class DepartmentsView extends VBox {
@@ -25,8 +25,8 @@ public class DepartmentsView extends VBox {
 
         var addBtn = new Button("Add Department");
         addBtn.getStyleClass().add("button-primary");
-        var ai = new FontIcon(FontAwesomeSolid.PLUS);
-        ai.setIconSize(12); ai.setStyle("-fx-icon-color:#FFF;");
+        var ai = new FontIcon(BytedanceIconsRegularAL.ADD);
+        ai.setIconSize(14); ai.setStyle("-fx-icon-color:#FFF;");
         addBtn.setGraphic(ai);
         addBtn.setOnAction(e -> showCreate());
 
@@ -41,7 +41,7 @@ public class DepartmentsView extends VBox {
         descCol.setCellValueFactory(c -> new SimpleStringProperty(str(c.getValue(), "description")));
 
         table.getColumns().addAll(nameCol, descCol);
-        table.setPlaceholder(new EmptyState(FontAwesomeSolid.BUILDING, "No departments", "Create your first department"));
+        table.setPlaceholder(new EmptyState(BytedanceIconsRegularAL.BUILDING_ONE, "No departments", "Create your first department"));
         getChildren().addAll(title, toolbar, table);
         loadData();
     }

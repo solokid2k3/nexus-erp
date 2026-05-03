@@ -2,20 +2,21 @@ package com.erp.hr;
 
 import com.erp.core.component.NavItem;
 import com.erp.core.view.MainShell;
-import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid;
+import org.kordamp.ikonli.bytedance.BytedanceIconsRegularAL;
+import org.kordamp.ikonli.bytedance.BytedanceIconsRegularMZ;
 
 import java.util.List;
 
 public class HRMainView extends MainShell {
 
     public HRMainView() {
-        super("HR", FontAwesomeSolid.USERS, List.of(
-                new NavItem("Dashboard", FontAwesomeSolid.TACHOMETER_ALT, HRDashboard::new),
-                new NavItem("Employees", FontAwesomeSolid.USER_TIE, EmployeesView::new),
-                new NavItem("Departments", FontAwesomeSolid.BUILDING, DepartmentsView::new),
-                new NavItem("Leave", FontAwesomeSolid.PLANE_DEPARTURE, LeaveView::new),
-                new NavItem("Attendance", FontAwesomeSolid.CLOCK, AttendanceView::new),
-                new NavItem("Payroll", FontAwesomeSolid.MONEY_BILL_ALT, PayrollView::new)
+        super("HR", BytedanceIconsRegularMZ.PEOPLES, List.of(
+                new NavItem("Dashboard", BytedanceIconsRegularAL.DASHBOARD, HRDashboard::new),
+                new NavItem("Employees", BytedanceIconsRegularAL.EVERY_USER, EmployeesView::new),
+                new NavItem("Departments", BytedanceIconsRegularAL.BUILDING_ONE, DepartmentsView::new),
+                new NavItem("Leave", BytedanceIconsRegularMZ.VACATION, LeaveView::new),
+                new NavItem("Attendance", BytedanceIconsRegularMZ.TIME, AttendanceView::new),
+                new NavItem("Payroll", BytedanceIconsRegularMZ.WALLET, PayrollView::new)
         ), null);
     }
 }

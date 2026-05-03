@@ -10,18 +10,19 @@ import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid;
 import org.kordamp.ikonli.javafx.FontIcon;
+import org.kordamp.ikonli.bytedance.BytedanceIconsRegularAL;
 import java.util.Map;
 
 public class InvoicesView extends VBox {
     private final ObservableList<Map<String, Object>> items = FXCollections.observableArrayList();
+
     @SuppressWarnings("unchecked")
     public InvoicesView() {
         setSpacing(16);
         var title = new Label("Invoices"); title.getStyleClass().add("display-heading");
         var addBtn = new Button("New Invoice"); addBtn.getStyleClass().add("button-primary");
-        var ai = new FontIcon(FontAwesomeSolid.PLUS); ai.setIconSize(12); ai.setStyle("-fx-icon-color:#FFF;"); addBtn.setGraphic(ai);
+        var ai = new FontIcon(BytedanceIconsRegularAL.ADD); ai.setIconSize(14); ai.setStyle("-fx-icon-color:#FFF;"); addBtn.setGraphic(ai);
         addBtn.setOnAction(e -> showCreate());
         var toolbar = new DataToolbar(new SearchField("Search invoices..."), addBtn);
         var table = new TableView<>(items); VBox.setVgrow(table, Priority.ALWAYS);
@@ -34,13 +35,15 @@ public class InvoicesView extends VBox {
         statusCol.setCellFactory(col -> new TableCell<>() { @Override protected void updateItem(String item, boolean empty) {
             super.updateItem(item, empty); if (empty || item == null) { setGraphic(null); setText(null); return; } setGraphic(StatusBadge.forStatus(item)); setText(null); }});
         table.getColumns().addAll(idCol, custCol, dateCol, amtCol, statusCol);
-        table.setPlaceholder(new EmptyState(FontAwesomeSolid.FILE_INVOICE_DOLLAR, "No invoices", "Create your first invoice"));
+        table.setPlaceholder(new EmptyState(BytedanceIconsRegularAL.BILL, "No invoices", "Create your first invoice"));
         getChildren().addAll(title, toolbar, table); loadData();
     }
+
     @SuppressWarnings("unchecked")
     private void loadData() { ApiClient.getInstance().getRaw("/finance/invoices").thenAccept(body -> Platform.runLater(() -> {
         try { var api = ApiClient.getInstance(); var d = api.getMapper().readTree(body); items.clear();
             if (d.isArray()) for (var n : d) items.add(api.getMapper().convertValue(n, Map.class)); } catch (Exception ignored) {} })); }
+
     private void showCreate() {
         var dialog = new Dialog<Void>(); dialog.setTitle("New Invoice");
         var cf = new TextField(); cf.setPromptText("Customer name"); var af = new TextField(); af.setPromptText("Amount");

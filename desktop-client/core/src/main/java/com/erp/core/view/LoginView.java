@@ -10,8 +10,9 @@ import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.util.Duration;
-import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid;
 import org.kordamp.ikonli.javafx.FontIcon;
+import org.kordamp.ikonli.bytedance.BytedanceIconsRegularAL;
+import org.kordamp.ikonli.bytedance.BytedanceIconsRegularMZ;
 
 import java.util.function.Consumer;
 
@@ -36,8 +37,8 @@ public class LoginView extends StackPane {
         card.setPadding(new Insets(48, 40, 40, 40));
         card.setAlignment(Pos.CENTER);
 
-        // Lock icon
-        var lockIcon = new FontIcon(FontAwesomeSolid.SHIELD_ALT);
+        // Shield icon
+        var lockIcon = new FontIcon(BytedanceIconsRegularMZ.SHIELD);
         lockIcon.setIconSize(36);
         lockIcon.setStyle("-fx-icon-color: #111111;");
 
@@ -51,8 +52,8 @@ public class LoginView extends StackPane {
         spacer.setPrefHeight(8);
 
         // Username field with icon
-        var userIcon = new FontIcon(FontAwesomeSolid.USER);
-        userIcon.setIconSize(14);
+        var userIcon = new FontIcon(BytedanceIconsRegularMZ.USER);
+        userIcon.setIconSize(16);
         userIcon.setStyle("-fx-icon-color: #9CA3AF;");
 
         var usernameField = new TextField();
@@ -60,8 +61,8 @@ public class LoginView extends StackPane {
         usernameField.setPrefHeight(44);
 
         // Password field with icon
-        var passIcon = new FontIcon(FontAwesomeSolid.LOCK);
-        passIcon.setIconSize(14);
+        var passIcon = new FontIcon(BytedanceIconsRegularAL.LOCK);
+        passIcon.setIconSize(16);
         passIcon.setStyle("-fx-icon-color: #9CA3AF;");
 
         var passwordField = new PasswordField();
@@ -69,8 +70,8 @@ public class LoginView extends StackPane {
         passwordField.setPrefHeight(44);
 
         // Login button
-        var loginIcon = new FontIcon(FontAwesomeSolid.ARROW_RIGHT);
-        loginIcon.setIconSize(14);
+        var loginIcon = new FontIcon(BytedanceIconsRegularAL.LOGIN);
+        loginIcon.setIconSize(16);
         loginIcon.setStyle("-fx-icon-color: #FFFFFF;");
 
         var loginBtn = new Button("Sign In");
@@ -123,8 +124,8 @@ public class LoginView extends StackPane {
         passwordField.setOnAction(e -> loginBtn.fire());
 
         // Demo hint
-        var hintIcon = new FontIcon(FontAwesomeSolid.INFO_CIRCLE);
-        hintIcon.setIconSize(12);
+        var hintIcon = new FontIcon(BytedanceIconsRegularAL.ATTENTION);
+        hintIcon.setIconSize(14);
         hintIcon.setStyle("-fx-icon-color: #9CA3AF;");
 
         var demoHint = new Label("Demo: admin / admin123");

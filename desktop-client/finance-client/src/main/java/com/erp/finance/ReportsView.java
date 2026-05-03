@@ -8,8 +8,10 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.*;
-import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid;
+import org.kordamp.ikonli.Ikon;
 import org.kordamp.ikonli.javafx.FontIcon;
+import org.kordamp.ikonli.bytedance.BytedanceIconsRegularAL;
+import org.kordamp.ikonli.bytedance.BytedanceIconsRegularMZ;
 
 public class ReportsView extends VBox {
     public ReportsView() {
@@ -21,16 +23,16 @@ public class ReportsView extends VBox {
         grid.setPadding(new Insets(8, 0, 0, 0));
 
         grid.getChildren().addAll(
-                createReportCard("Trial Balance", FontAwesomeSolid.BALANCE_SCALE, "#6366F1", "/finance/reports/trial-balance"),
-                createReportCard("Profit & Loss", FontAwesomeSolid.CHART_LINE, "#10B981", "/finance/reports/profit-loss"),
-                createReportCard("Balance Sheet", FontAwesomeSolid.FILE_ALT, "#3B82F6", "/finance/reports/balance-sheet"),
-                createReportCard("AR Aging", FontAwesomeSolid.CLOCK, "#F59E0B", "/finance/reports/ar-aging")
+                createReportCard("Trial Balance", BytedanceIconsRegularMZ.SCALE, "#6366F1", "/finance/reports/trial-balance"),
+                createReportCard("Profit & Loss", BytedanceIconsRegularAL.CHART_LINE, "#10B981", "/finance/reports/profit-loss"),
+                createReportCard("Balance Sheet", BytedanceIconsRegularAL.DOCUMENT_FOLDER, "#3B82F6", "/finance/reports/balance-sheet"),
+                createReportCard("AR Aging", BytedanceIconsRegularMZ.TIME, "#F59E0B", "/finance/reports/ar-aging")
         );
 
         getChildren().addAll(title, subtitle, grid);
     }
 
-    private VBox createReportCard(String name, FontAwesomeSolid icon, String color, String endpoint) {
+    private VBox createReportCard(String name, Ikon icon, String color, String endpoint) {
         var card = new VBox(12);
         card.getStyleClass().add("card");
         card.setPadding(new Insets(24));

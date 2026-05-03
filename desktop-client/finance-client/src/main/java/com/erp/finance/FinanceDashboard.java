@@ -7,17 +7,17 @@ import javafx.application.Platform;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid;
+import org.kordamp.ikonli.bytedance.BytedanceIconsRegularAL;
 
 public class FinanceDashboard extends VBox {
     public FinanceDashboard() {
         setSpacing(24);
         var title = new Label("Dashboard"); title.getStyleClass().add("display-heading");
         var statsRow = new HBox(16);
-        var accounts = new StatCard("Accounts", "—", FontAwesomeSolid.UNIVERSITY, "#6366F1");
-        var journals = new StatCard("Journal Entries", "—", FontAwesomeSolid.BOOK, "#10B981");
-        var invoices = new StatCard("Pending Invoices", "—", FontAwesomeSolid.FILE_INVOICE_DOLLAR, "#F59E0B");
-        var budgets = new StatCard("Budgets", "—", FontAwesomeSolid.MONEY_CHECK_ALT, "#3B82F6");
+        var accounts = new StatCard("Accounts", "—", BytedanceIconsRegularAL.BANK, "#6366F1");
+        var journals = new StatCard("Journal Entries", "—", BytedanceIconsRegularAL.BOOK_OPEN, "#10B981");
+        var invoices = new StatCard("Pending Invoices", "—", BytedanceIconsRegularAL.BILL, "#F59E0B");
+        var budgets = new StatCard("Budgets", "—", BytedanceIconsRegularAL.FUNDS, "#3B82F6");
         statsRow.getChildren().addAll(accounts, journals, invoices, budgets);
         var skeleton = new SkeletonPane(3);
         getChildren().addAll(title, statsRow, skeleton);

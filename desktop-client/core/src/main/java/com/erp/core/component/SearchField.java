@@ -2,11 +2,9 @@ package com.erp.core.component;
 
 import javafx.geometry.Insets;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
-import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid;
 import org.kordamp.ikonli.javafx.FontIcon;
+import org.kordamp.ikonli.bytedance.BytedanceIconsRegularMZ;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -25,8 +23,8 @@ public class SearchField extends StackPane {
         textField.setPrefHeight(36);
         textField.setPrefWidth(260);
 
-        var searchIcon = new FontIcon(FontAwesomeSolid.SEARCH);
-        searchIcon.setIconSize(13);
+        var searchIcon = new FontIcon(BytedanceIconsRegularMZ.SEARCH);
+        searchIcon.setIconSize(15);
         searchIcon.setStyle("-fx-icon-color: #9CA3AF;");
 
         StackPane.setAlignment(searchIcon, javafx.geometry.Pos.CENTER_LEFT);

@@ -10,8 +10,8 @@ import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid;
 import org.kordamp.ikonli.javafx.FontIcon;
+import org.kordamp.ikonli.bytedance.BytedanceIconsRegularAL;
 import java.util.Map;
 
 public class EmployeesView extends VBox {
@@ -25,8 +25,8 @@ public class EmployeesView extends VBox {
 
         var addBtn = new Button("Add Employee");
         addBtn.getStyleClass().add("button-primary");
-        var ai = new FontIcon(FontAwesomeSolid.PLUS);
-        ai.setIconSize(12); ai.setStyle("-fx-icon-color:#FFF;");
+        var ai = new FontIcon(BytedanceIconsRegularAL.ADD);
+        ai.setIconSize(14); ai.setStyle("-fx-icon-color:#FFF;");
         addBtn.setGraphic(ai);
         addBtn.setOnAction(e -> showCreate());
 
@@ -58,7 +58,7 @@ public class EmployeesView extends VBox {
         });
 
         table.getColumns().addAll(nameCol, emailCol, deptCol, posCol, statusCol);
-        table.setPlaceholder(new EmptyState(FontAwesomeSolid.USER_TIE, "No employees", "Add your first employee"));
+        table.setPlaceholder(new EmptyState(BytedanceIconsRegularAL.EVERY_USER, "No employees", "Add your first employee"));
         getChildren().addAll(title, toolbar, table);
         loadData();
     }

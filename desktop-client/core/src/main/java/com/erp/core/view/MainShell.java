@@ -8,11 +8,12 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.Separator;
 import javafx.scene.layout.*;
 import javafx.util.Duration;
-import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid;
+import org.kordamp.ikonli.Ikon;
 import org.kordamp.ikonli.javafx.FontIcon;
+import org.kordamp.ikonli.bytedance.BytedanceIconsRegularAL;
+import org.kordamp.ikonli.bytedance.BytedanceIconsRegularMZ;
 
 import java.util.List;
 
@@ -24,7 +25,7 @@ public class MainShell extends BorderPane {
     private NavItem activeItem;
     private final Runnable onLogout;
 
-    public MainShell(String appTitle, FontAwesomeSolid appIcon, List<NavItem> navItems, Runnable onLogout) {
+    public MainShell(String appTitle, Ikon appIcon, List<NavItem> navItems, Runnable onLogout) {
         this.navItems = navItems;
         this.onLogout = onLogout;
         getStyleClass().add("root-pane");
@@ -38,7 +39,7 @@ public class MainShell extends BorderPane {
         var headerBox = new VBox(4);
         headerBox.getStyleClass().add("sidebar-header");
         var appIconNode = new FontIcon(appIcon);
-        appIconNode.setIconSize(20);
+        appIconNode.setIconSize(22);
         appIconNode.setStyle("-fx-icon-color: #111111;");
         var titleRow = new HBox(10);
         titleRow.setAlignment(Pos.CENTER_LEFT);
@@ -69,8 +70,8 @@ public class MainShell extends BorderPane {
         var userName = session.getUserName() != null ? session.getUserName() : "User";
         var userRole = session.getUserRole() != null ? session.getUserRole() : "Staff";
 
-        var userIcon = new FontIcon(FontAwesomeSolid.USER_CIRCLE);
-        userIcon.setIconSize(18);
+        var userIcon = new FontIcon(BytedanceIconsRegularMZ.USER);
+        userIcon.setIconSize(20);
         userIcon.setStyle("-fx-icon-color: #6B7280;");
 
         var nameRow = new HBox(8);
@@ -84,8 +85,8 @@ public class MainShell extends BorderPane {
 
         var logoutBtn = new Button("Sign Out");
         logoutBtn.getStyleClass().add("logout-btn");
-        var logoutIcon = new FontIcon(FontAwesomeSolid.SIGN_OUT_ALT);
-        logoutIcon.setIconSize(12);
+        var logoutIcon = new FontIcon(BytedanceIconsRegularAL.LOGOUT);
+        logoutIcon.setIconSize(14);
         logoutIcon.setStyle("-fx-icon-color: #DC2626;");
         logoutBtn.setGraphic(logoutIcon);
         logoutBtn.setOnAction(e -> {

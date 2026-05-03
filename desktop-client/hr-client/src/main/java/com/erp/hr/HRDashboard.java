@@ -7,7 +7,8 @@ import javafx.application.Platform;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid;
+import org.kordamp.ikonli.bytedance.BytedanceIconsRegularAL;
+import org.kordamp.ikonli.bytedance.BytedanceIconsRegularMZ;
 
 public class HRDashboard extends VBox {
     public HRDashboard() {
@@ -16,10 +17,10 @@ public class HRDashboard extends VBox {
         title.getStyleClass().add("display-heading");
 
         var statsRow = new HBox(16);
-        var employees = new StatCard("Employees", "—", FontAwesomeSolid.USER_TIE, "#6366F1");
-        var departments = new StatCard("Departments", "—", FontAwesomeSolid.BUILDING, "#3B82F6");
-        var leaves = new StatCard("Pending Leaves", "—", FontAwesomeSolid.PLANE_DEPARTURE, "#F59E0B");
-        var payroll = new StatCard("Payroll Runs", "—", FontAwesomeSolid.MONEY_BILL_ALT, "#10B981");
+        var employees = new StatCard("Employees", "—", BytedanceIconsRegularAL.EVERY_USER, "#6366F1");
+        var departments = new StatCard("Departments", "—", BytedanceIconsRegularAL.BUILDING_ONE, "#3B82F6");
+        var leaves = new StatCard("Pending Leaves", "—", BytedanceIconsRegularMZ.VACATION, "#F59E0B");
+        var payroll = new StatCard("Payroll Runs", "—", BytedanceIconsRegularMZ.WALLET, "#10B981");
         statsRow.getChildren().addAll(employees, departments, leaves, payroll);
 
         var skeleton = new SkeletonPane(3);

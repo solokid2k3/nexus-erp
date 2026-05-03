@@ -7,11 +7,11 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.*;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid;
 import org.kordamp.ikonli.javafx.FontIcon;
+import org.kordamp.ikonli.bytedance.BytedanceIconsRegularAL;
+import org.kordamp.ikonli.bytedance.BytedanceIconsRegularMZ;
 import java.util.Map;
 
 public class AttendanceView extends VBox {
@@ -25,8 +25,8 @@ public class AttendanceView extends VBox {
 
         var clockInBtn = new Button("Clock In");
         clockInBtn.getStyleClass().add("button-success");
-        var ciIcon = new FontIcon(FontAwesomeSolid.SIGN_IN_ALT);
-        ciIcon.setIconSize(12); ciIcon.setStyle("-fx-icon-color:#FFF;");
+        var ciIcon = new FontIcon(BytedanceIconsRegularAL.LOGIN);
+        ciIcon.setIconSize(14); ciIcon.setStyle("-fx-icon-color:#FFF;");
         clockInBtn.setGraphic(ciIcon);
         clockInBtn.setOnAction(e -> ApiClient.getInstance()
             .post("/hr/attendance/clock-in", Map.of("employee_id", "self"))
@@ -34,8 +34,8 @@ public class AttendanceView extends VBox {
 
         var clockOutBtn = new Button("Clock Out");
         clockOutBtn.getStyleClass().add("button-danger");
-        var coIcon = new FontIcon(FontAwesomeSolid.SIGN_OUT_ALT);
-        coIcon.setIconSize(12); coIcon.setStyle("-fx-icon-color:#DC2626;");
+        var coIcon = new FontIcon(BytedanceIconsRegularAL.LOGOUT);
+        coIcon.setIconSize(14); coIcon.setStyle("-fx-icon-color:#DC2626;");
         clockOutBtn.setGraphic(coIcon);
         clockOutBtn.setOnAction(e -> ApiClient.getInstance()
             .post("/hr/attendance/clock-out", Map.of("employee_id", "self"))
@@ -58,7 +58,7 @@ public class AttendanceView extends VBox {
         hoursCol.setCellValueFactory(c -> new SimpleStringProperty(str(c.getValue(), "hours_worked")));
 
         table.getColumns().addAll(empCol, dateCol, inCol, outCol, hoursCol);
-        table.setPlaceholder(new EmptyState(FontAwesomeSolid.CLOCK, "No attendance records", "Clock in to start"));
+        table.setPlaceholder(new EmptyState(BytedanceIconsRegularMZ.TIME, "No attendance records", "Clock in to start"));
         getChildren().addAll(title, toolbar, table);
         loadData();
     }

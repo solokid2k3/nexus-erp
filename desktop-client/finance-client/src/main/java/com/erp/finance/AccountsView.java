@@ -10,18 +10,19 @@ import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid;
 import org.kordamp.ikonli.javafx.FontIcon;
+import org.kordamp.ikonli.bytedance.BytedanceIconsRegularAL;
 import java.util.Map;
 
 public class AccountsView extends VBox {
     private final ObservableList<Map<String, Object>> items = FXCollections.observableArrayList();
+
     @SuppressWarnings("unchecked")
     public AccountsView() {
         setSpacing(16);
         var title = new Label("Chart of Accounts"); title.getStyleClass().add("display-heading");
         var addBtn = new Button("Add Account"); addBtn.getStyleClass().add("button-primary");
-        var ai = new FontIcon(FontAwesomeSolid.PLUS); ai.setIconSize(12); ai.setStyle("-fx-icon-color:#FFF;"); addBtn.setGraphic(ai);
+        var ai = new FontIcon(BytedanceIconsRegularAL.ADD); ai.setIconSize(14); ai.setStyle("-fx-icon-color:#FFF;"); addBtn.setGraphic(ai);
         addBtn.setOnAction(e -> showCreate());
         var toolbar = new DataToolbar(new SearchField("Search accounts..."), addBtn);
         var table = new TableView<>(items); VBox.setVgrow(table, Priority.ALWAYS);
@@ -33,13 +34,15 @@ public class AccountsView extends VBox {
             super.updateItem(item, empty); if (empty || item == null) { setGraphic(null); setText(null); return; } setGraphic(StatusBadge.forStatus(item)); setText(null); }});
         var balCol = new TableColumn<Map<String, Object>, String>("Balance"); balCol.setCellValueFactory(c -> { var v = c.getValue().get("balance"); return new SimpleStringProperty(v != null ? "$" + v : "$0"); });
         table.getColumns().addAll(codeCol, nameCol, typeCol, balCol);
-        table.setPlaceholder(new EmptyState(FontAwesomeSolid.UNIVERSITY, "No accounts", "Create your first account"));
+        table.setPlaceholder(new EmptyState(BytedanceIconsRegularAL.BANK, "No accounts", "Create your first account"));
         getChildren().addAll(title, toolbar, table); loadData();
     }
+
     @SuppressWarnings("unchecked")
     private void loadData() { ApiClient.getInstance().getRaw("/finance/accounts").thenAccept(body -> Platform.runLater(() -> {
         try { var api = ApiClient.getInstance(); var d = api.getMapper().readTree(body); items.clear();
             if (d.isArray()) for (var n : d) items.add(api.getMapper().convertValue(n, Map.class)); } catch (Exception ignored) {} })); }
+
     private void showCreate() {
         var dialog = new Dialog<Void>(); dialog.setTitle("Add Account");
         var cf = new TextField(); cf.setPromptText("Code"); var nf = new TextField(); nf.setPromptText("Name"); var tf = new TextField(); tf.setPromptText("Type (asset/liability/equity/revenue/expense)");

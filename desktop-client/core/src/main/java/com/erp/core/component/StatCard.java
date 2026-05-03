@@ -2,7 +2,6 @@ package com.erp.core.component;
 
 import javafx.animation.FadeTransition;
 import javafx.animation.ScaleTransition;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
@@ -12,6 +11,7 @@ import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 import org.kordamp.ikonli.Ikon;
 import org.kordamp.ikonli.javafx.FontIcon;
+import org.kordamp.ikonli.bytedance.BytedanceIconsRegularAL;
 
 public class StatCard extends VBox {
 
@@ -56,7 +56,7 @@ public class StatCard extends VBox {
     }
 
     public StatCard(String title, String value) {
-        this(title, value, org.kordamp.ikonli.fontawesome5.FontAwesomeSolid.CHART_BAR, "#6366F1");
+        this(title, value, BytedanceIconsRegularAL.CHART_HISTOGRAM, "#6366F1");
     }
 
     public void setValue(String value) {

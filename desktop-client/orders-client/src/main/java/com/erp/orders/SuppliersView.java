@@ -10,8 +10,9 @@ import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid;
 import org.kordamp.ikonli.javafx.FontIcon;
+import org.kordamp.ikonli.bytedance.BytedanceIconsRegularAL;
+import org.kordamp.ikonli.bytedance.BytedanceIconsRegularMZ;
 import java.util.Map;
 
 public class SuppliersView extends VBox {
@@ -21,7 +22,7 @@ public class SuppliersView extends VBox {
         setSpacing(16);
         var title = new Label("Suppliers"); title.getStyleClass().add("display-heading");
         var addBtn = new Button("Add Supplier"); addBtn.getStyleClass().add("button-primary");
-        var ai = new FontIcon(FontAwesomeSolid.PLUS); ai.setIconSize(12); ai.setStyle("-fx-icon-color:#FFF;"); addBtn.setGraphic(ai);
+        var ai = new FontIcon(BytedanceIconsRegularAL.ADD); ai.setIconSize(14); ai.setStyle("-fx-icon-color:#FFF;"); addBtn.setGraphic(ai);
         addBtn.setOnAction(e -> showCreate());
         var toolbar = new DataToolbar(new SearchField("Search suppliers..."), addBtn);
         var table = new TableView<>(items); VBox.setVgrow(table, Priority.ALWAYS);
@@ -31,7 +32,7 @@ public class SuppliersView extends VBox {
         var emailCol = new TableColumn<Map<String, Object>, String>("Email"); emailCol.setCellValueFactory(c -> new SimpleStringProperty(str(c.getValue(), "email")));
         var phoneCol = new TableColumn<Map<String, Object>, String>("Phone"); phoneCol.setCellValueFactory(c -> new SimpleStringProperty(str(c.getValue(), "phone")));
         table.getColumns().addAll(nameCol, contactCol, emailCol, phoneCol);
-        table.setPlaceholder(new EmptyState(FontAwesomeSolid.INDUSTRY, "No suppliers", "Add your first supplier", "Add Supplier", this::showCreate));
+        table.setPlaceholder(new EmptyState(BytedanceIconsRegularAL.FACTORY_BUILDING, "No suppliers", "Add your first supplier", "Add Supplier", this::showCreate));
         getChildren().addAll(title, toolbar, table); loadData();
     }
     @SuppressWarnings("unchecked")

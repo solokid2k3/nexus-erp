@@ -4,11 +4,10 @@ import com.erp.core.api.ApiClient;
 import com.erp.core.component.FormField;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
-import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid;
 import org.kordamp.ikonli.javafx.FontIcon;
+import org.kordamp.ikonli.bytedance.BytedanceIconsRegularAL;
 
 import java.util.Map;
 
@@ -18,7 +17,7 @@ public class TaxView extends VBox {
         var title = new Label("Tax Calculator");
         title.getStyleClass().add("display-heading");
 
-        var icon = new FontIcon(FontAwesomeSolid.CALCULATOR);
+        var icon = new FontIcon(BytedanceIconsRegularAL.CALCULATOR);
         icon.setIconSize(36);
         icon.setStyle("-fx-icon-color: #6366F1;");
 

@@ -10,8 +10,8 @@ import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid;
 import org.kordamp.ikonli.javafx.FontIcon;
+import org.kordamp.ikonli.bytedance.BytedanceIconsRegularAL;
 import java.util.Map;
 
 public class BudgetsView extends VBox {
@@ -25,8 +25,8 @@ public class BudgetsView extends VBox {
 
         var addBtn = new Button("New Budget");
         addBtn.getStyleClass().add("button-primary");
-        var ai = new FontIcon(FontAwesomeSolid.PLUS);
-        ai.setIconSize(12); ai.setStyle("-fx-icon-color:#FFF;");
+        var ai = new FontIcon(BytedanceIconsRegularAL.ADD);
+        ai.setIconSize(14); ai.setStyle("-fx-icon-color:#FFF;");
         addBtn.setGraphic(ai);
         addBtn.setOnAction(e -> showCreate());
 
@@ -46,7 +46,7 @@ public class BudgetsView extends VBox {
         });
 
         table.getColumns().addAll(nameCol, periodCol, amtCol);
-        table.setPlaceholder(new EmptyState(FontAwesomeSolid.MONEY_CHECK_ALT, "No budgets", "Create your first budget"));
+        table.setPlaceholder(new EmptyState(BytedanceIconsRegularAL.FUNDS, "No budgets", "Create your first budget"));
         getChildren().addAll(title, toolbar, table);
         loadData();
     }
