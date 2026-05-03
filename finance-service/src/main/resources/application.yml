@@ -1,0 +1,34 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: finance-service
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/erp_db}
+    username: ${SPRING_DATASOURCE_USERNAME:erp_user}
+    password: ${SPRING_DATASOURCE_PASSWORD:erp_secret_2025}
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 5
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate.default_schema: finance
+      hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect
+      hibernate.type.preferred_uuid_jdbc_type: OTHER
+    show-sql: false
+  data:
+    redis:
+      host: ${SPRING_REDIS_HOST:localhost}
+      port: ${SPRING_REDIS_PORT:6379}
+
+grpc:
+  server:
+    port: ${GRPC_PORT:50053}
+
+logging:
+  level:
+    com.erp: DEBUG
+    org.hibernate.SQL: WARN

@@ -1,0 +1,311 @@
+syntax = "proto3";
+
+package erp.inventory;
+
+option go_package = "erp-system/proto/inventory";
+option java_package = "com.erp.proto.inventory";
+option java_multiple_files = true;
+
+import "google/protobuf/timestamp.proto";
+import "common.proto";
+
+// ============================================================
+// Product Management
+// ============================================================
+
+message Product {
+  string id = 1;
+  string sku = 2;
+  string name = 3;
+  string description = 4;
+  string category_id = 5;
+  string brand = 6;
+  string unit_of_measure = 7; // PCS, KG, LTR, etc.
+  erp.common.Money unit_cost = 8;
+  erp.common.Money selling_price = 9;
+  double weight_kg = 10;
+  map<string, string> attributes = 11; // custom attributes
+  ProductStatus status = 12;
+  int32 reorder_point = 13;
+  int32 reorder_quantity = 14;
+  int32 lead_time_days = 15;
+  string supplier_id = 16;
+  string tax_category = 17;
+  erp.common.AuditInfo audit = 18;
+}
+
+enum ProductStatus {
+  PRODUCT_STATUS_UNSPECIFIED = 0;
+  PRODUCT_STATUS_ACTIVE = 1;
+  PRODUCT_STATUS_INACTIVE = 2;
+  PRODUCT_STATUS_DISCONTINUED = 3;
+}
+
+message CreateProductRequest {
+  string sku = 1;
+  string name = 2;
+  string description = 3;
+  string category_id = 4;
+  string brand = 5;
+  string unit_of_measure = 6;
+  erp.common.Money unit_cost = 7;
+  erp.common.Money selling_price = 8;
+  double weight_kg = 9;
+  map<string, string> attributes = 10;
+  int32 reorder_point = 11;
+  int32 reorder_quantity = 12;
+  int32 lead_time_days = 13;
+  string supplier_id = 14;
+  string tax_category = 15;
+  string created_by = 16;
+}
+
+message UpdateProductRequest {
+  string id = 1;
+  string name = 2;
+  string description = 3;
+  erp.common.Money unit_cost = 4;
+  erp.common.Money selling_price = 5;
+  int32 reorder_point = 6;
+  int32 reorder_quantity = 7;
+  int32 lead_time_days = 8;
+  string supplier_id = 9;
+  ProductStatus status = 10;
+  map<string, string> attributes = 11;
+  string updated_by = 12;
+}
+
+message GetProductRequest {
+  string id = 1;
+}
+
+message ListProductsRequest {
+  erp.common.PaginationRequest pagination = 1;
+  string category_id = 2;
+  ProductStatus status = 3;
+  string search_term = 4;
+  string supplier_id = 5;
+}
+
+message ListProductsResponse {
+  repeated Product products = 1;
+  erp.common.PaginationResponse pagination = 2;
+}
+
+// ============================================================
+// Category Management
+// ============================================================
+
+message Category {
+  string id = 1;
+  string name = 2;
+  string description = 3;
+  string parent_id = 4;
+  int32 product_count = 5;
+  erp.common.AuditInfo audit = 6;
+}
+
+message CreateCategoryRequest {
+  string name = 1;
+  string description = 2;
+  string parent_id = 3;
+  string created_by = 4;
+}
+
+message ListCategoriesRequest {
+  string parent_id = 1;
+}
+
+message ListCategoriesResponse {
+  repeated Category categories = 1;
+}
+
+// ============================================================
+// Warehouse & Stock Management
+// ============================================================
+
+message Warehouse {
+  string id = 1;
+  string name = 2;
+  string code = 3;
+  erp.common.Address address = 4;
+  erp.common.ContactInfo contact = 5;
+  WarehouseStatus status = 6;
+  int64 capacity_units = 7;
+  int64 used_units = 8;
+  erp.common.AuditInfo audit = 9;
+}
+
+enum WarehouseStatus {
+  WAREHOUSE_STATUS_UNSPECIFIED = 0;
+  WAREHOUSE_STATUS_ACTIVE = 1;
+  WAREHOUSE_STATUS_INACTIVE = 2;
+  WAREHOUSE_STATUS_MAINTENANCE = 3;
+}
+
+message CreateWarehouseRequest {
+  string name = 1;
+  string code = 2;
+  erp.common.Address address = 3;
+  erp.common.ContactInfo contact = 4;
+  int64 capacity_units = 5;
+  string created_by = 6;
+}
+
+message StockLevel {
+  string product_id = 1;
+  string warehouse_id = 2;
+  int32 quantity_on_hand = 3;
+  int32 quantity_reserved = 4;
+  int32 quantity_available = 5;  // on_hand - reserved
+  int32 quantity_incoming = 6;   // expected from purchase orders
+  string bin_location = 7;
+  google.protobuf.Timestamp last_counted = 8;
+}
+
+message AdjustStockRequest {
+  string product_id = 1;
+  string warehouse_id = 2;
+  int32 quantity_change = 3;     // positive = add, negative = remove
+  StockAdjustmentReason reason = 4;
+  string reference_id = 5;       // order ID, PO ID, etc.
+  string notes = 6;
+  string adjusted_by = 7;
+}
+
+enum StockAdjustmentReason {
+  STOCK_ADJUSTMENT_UNSPECIFIED = 0;
+  STOCK_ADJUSTMENT_PURCHASE_RECEIPT = 1;
+  STOCK_ADJUSTMENT_SALES_SHIPMENT = 2;
+  STOCK_ADJUSTMENT_RETURN = 3;
+  STOCK_ADJUSTMENT_DAMAGE = 4;
+  STOCK_ADJUSTMENT_INVENTORY_COUNT = 5;
+  STOCK_ADJUSTMENT_TRANSFER = 6;
+  STOCK_ADJUSTMENT_PRODUCTION = 7;
+}
+
+message TransferStockRequest {
+  string product_id = 1;
+  string from_warehouse_id = 2;
+  string to_warehouse_id = 3;
+  int32 quantity = 4;
+  string notes = 5;
+  string transferred_by = 6;
+}
+
+message GetStockLevelRequest {
+  string product_id = 1;
+  string warehouse_id = 2;  // empty = all warehouses
+}
+
+message GetStockLevelsResponse {
+  repeated StockLevel levels = 1;
+  int32 total_on_hand = 2;
+  int32 total_available = 3;
+}
+
+message ReserveStockRequest {
+  string product_id = 1;
+  string warehouse_id = 2;
+  int32 quantity = 3;
+  string order_id = 4;
+  string reserved_by = 5;
+}
+
+message ReserveStockResponse {
+  bool success = 1;
+  string reservation_id = 2;
+  string message = 3;
+}
+
+message ReleaseReservationRequest {
+  string reservation_id = 1;
+  string released_by = 2;
+}
+
+// ============================================================
+// Stock Movement / Audit Trail
+// ============================================================
+
+message StockMovement {
+  string id = 1;
+  string product_id = 2;
+  string warehouse_id = 3;
+  StockAdjustmentReason reason = 4;
+  int32 quantity_change = 5;
+  int32 quantity_before = 6;
+  int32 quantity_after = 7;
+  string reference_id = 8;
+  string notes = 9;
+  erp.common.AuditInfo audit = 10;
+}
+
+message ListStockMovementsRequest {
+  string product_id = 1;
+  string warehouse_id = 2;
+  erp.common.DateRange date_range = 3;
+  StockAdjustmentReason reason = 4;
+  erp.common.PaginationRequest pagination = 5;
+}
+
+message ListStockMovementsResponse {
+  repeated StockMovement movements = 1;
+  erp.common.PaginationResponse pagination = 2;
+}
+
+// ============================================================
+// Low Stock Alerts
+// ============================================================
+
+message LowStockAlert {
+  string product_id = 1;
+  string product_name = 2;
+  string sku = 3;
+  string warehouse_id = 4;
+  string warehouse_name = 5;
+  int32 current_quantity = 6;
+  int32 reorder_point = 7;
+  int32 reorder_quantity = 8;
+  string severity = 9; // WARNING, CRITICAL
+}
+
+message GetLowStockAlertsRequest {
+  string warehouse_id = 1;
+  string severity = 2;
+}
+
+message GetLowStockAlertsResponse {
+  repeated LowStockAlert alerts = 1;
+}
+
+// ============================================================
+// Service Definition
+// ============================================================
+
+service InventoryService {
+  // Product management
+  rpc CreateProduct(CreateProductRequest) returns (Product);
+  rpc GetProduct(GetProductRequest) returns (Product);
+  rpc UpdateProduct(UpdateProductRequest) returns (Product);
+  rpc ListProducts(ListProductsRequest) returns (ListProductsResponse);
+
+  // Category management
+  rpc CreateCategory(CreateCategoryRequest) returns (Category);
+  rpc ListCategories(ListCategoriesRequest) returns (ListCategoriesResponse);
+
+  // Warehouse management
+  rpc CreateWarehouse(CreateWarehouseRequest) returns (Warehouse);
+
+  // Stock management
+  rpc GetStockLevels(GetStockLevelRequest) returns (GetStockLevelsResponse);
+  rpc AdjustStock(AdjustStockRequest) returns (erp.common.StatusResponse);
+  rpc TransferStock(TransferStockRequest) returns (erp.common.StatusResponse);
+  rpc ReserveStock(ReserveStockRequest) returns (ReserveStockResponse);
+  rpc ReleaseReservation(ReleaseReservationRequest) returns (erp.common.StatusResponse);
+
+  // Stock movements
+  rpc ListStockMovements(ListStockMovementsRequest) returns (ListStockMovementsResponse);
+
+  // Alerts
+  rpc GetLowStockAlerts(GetLowStockAlertsRequest) returns (GetLowStockAlertsResponse);
+}

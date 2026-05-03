@@ -1,0 +1,131 @@
+version: '3.9'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: erp_db
+      POSTGRES_USER: erp_user
+      POSTGRES_PASSWORD: erp_secret_2025
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./db/migrations:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U erp_user -d erp_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
+    volumes:
+      - redisdata:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  gateway:
+    build:
+      context: .
+      dockerfile: gateway/Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - SERVER_PORT=8080
+      - INVENTORY_SERVICE_ADDR=inventory-service:50051
+      - ORDER_SERVICE_ADDR=order-service:50052
+      - FINANCE_SERVICE_ADDR=finance-service:50053
+      - HR_SERVICE_ADDR=hr-service:50054
+      - REDIS_ADDR=redis:6379
+      - JWT_SECRET=erp-jwt-secret-key-change-in-production
+    depends_on:
+      redis:
+        condition: service_healthy
+      inventory-service:
+        condition: service_started
+      order-service:
+        condition: service_started
+
+  inventory-service:
+    build:
+      context: .
+      dockerfile: inventory-service/Dockerfile
+    ports:
+      - "50051:50051"
+    environment:
+      - GRPC_PORT=50051
+      - DATABASE_URL=postgres://erp_user:erp_secret_2025@postgres:5432/erp_db?sslmode=disable
+      - REDIS_ADDR=redis:6379
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  order-service:
+    build:
+      context: .
+      dockerfile: order-service/Dockerfile
+    ports:
+      - "50052:50052"
+    environment:
+      - GRPC_PORT=50052
+      - DATABASE_URL=postgres://erp_user:erp_secret_2025@postgres:5432/erp_db?sslmode=disable
+      - REDIS_ADDR=redis:6379
+      - INVENTORY_SERVICE_ADDR=inventory-service:50051
+      - FINANCE_SERVICE_ADDR=finance-service:50053
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  finance-service:
+    build:
+      context: .
+      dockerfile: finance-service/Dockerfile
+    ports:
+      - "50053:50053"
+    environment:
+      - GRPC_PORT=50053
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/erp_db
+      - SPRING_DATASOURCE_USERNAME=erp_user
+      - SPRING_DATASOURCE_PASSWORD=erp_secret_2025
+      - SPRING_REDIS_HOST=redis
+      - SPRING_REDIS_PORT=6379
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  hr-service:
+    build:
+      context: .
+      dockerfile: hr-service/Dockerfile
+    ports:
+      - "50054:50054"
+    environment:
+      - GRPC_PORT=50054
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/erp_db
+      - SPRING_DATASOURCE_USERNAME=erp_user
+      - SPRING_DATASOURCE_PASSWORD=erp_secret_2025
+      - SPRING_REDIS_HOST=redis
+      - SPRING_REDIS_PORT=6379
+      - FINANCE_SERVICE_ADDR=finance-service:50053
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+volumes:
+  pgdata:
+  redisdata:

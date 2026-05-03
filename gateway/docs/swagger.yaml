@@ -1,0 +1,1857 @@
+basePath: /
+definitions:
+  handlers.AuthResponse:
+    properties:
+      access_token:
+        type: string
+      expires_in:
+        type: integer
+      refresh_token:
+        type: string
+      token_type:
+        type: string
+    type: object
+  handlers.LoginRequest:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - password
+    - username
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: support@erp-system.com
+    name: ERP System Support
+  description: Enterprise Resource Planning System API Gateway. Provides unified REST
+    API access to Inventory, Order, Finance, and HR microservices.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: ERP System API
+  version: "1.0"
+paths:
+  /api/v1/auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Authenticate with username and password to receive JWT tokens
+      parameters:
+      - description: Login credentials
+        in: body
+        name: credentials
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handlers.AuthResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      summary: User login
+      tags:
+      - Authentication
+  /api/v1/auth/refresh:
+    post:
+      consumes:
+      - application/json
+      description: Exchange a valid refresh token for a new access token
+      parameters:
+      - description: Refresh token
+        in: body
+        name: token
+        required: true
+        schema:
+          properties:
+            refresh_token:
+              type: string
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handlers.AuthResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Refresh access token
+      tags:
+      - Authentication
+  /api/v1/finance/accounts:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: List all accounts
+      tags:
+      - Finance - Accounts
+    post:
+      consumes:
+      - application/json
+      description: Create a new account in the chart of accounts
+      parameters:
+      - description: Account data (code, name, type)
+        in: body
+        name: account
+        required: true
+        schema:
+          additionalProperties: true
+          type: object
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Create a chart of accounts entry
+      tags:
+      - Finance - Accounts
+  /api/v1/finance/accounts/{id}:
+    get:
+      parameters:
+      - description: Account ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get an account by ID
+      tags:
+      - Finance - Accounts
+  /api/v1/finance/budgets:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: List all budgets
+      tags:
+      - Finance - Budgets
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Budget data
+        in: body
+        name: budget
+        required: true
+        schema:
+          additionalProperties: true
+          type: object
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Create a budget
+      tags:
+      - Finance - Budgets
+  /api/v1/finance/budgets/{id}:
+    get:
+      parameters:
+      - description: Budget ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get a budget by ID
+      tags:
+      - Finance - Budgets
+  /api/v1/finance/invoices:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: List all invoices
+      tags:
+      - Finance - Invoices
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Invoice data
+        in: body
+        name: invoice
+        required: true
+        schema:
+          additionalProperties: true
+          type: object
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Create an invoice
+      tags:
+      - Finance - Invoices
+  /api/v1/finance/invoices/{id}:
+    get:
+      parameters:
+      - description: Invoice ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get an invoice by ID
+      tags:
+      - Finance - Invoices
+  /api/v1/finance/invoices/{id}/payment:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Invoice ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Payment data
+        in: body
+        name: payment
+        required: true
+        schema:
+          additionalProperties: true
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Record a payment against an invoice
+      tags:
+      - Finance - Invoices
+  /api/v1/finance/journal-entries:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: List all journal entries
+      tags:
+      - Finance - Journal Entries
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Journal entry data (date, lines, memo)
+        in: body
+        name: entry
+        required: true
+        schema:
+          additionalProperties: true
+          type: object
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Create a journal entry
+      tags:
+      - Finance - Journal Entries
+  /api/v1/finance/journal-entries/{id}:
+    get:
+      parameters:
+      - description: Journal Entry ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get a journal entry by ID
+      tags:
+      - Finance - Journal Entries
+  /api/v1/finance/journal-entries/{id}/post:
+    post:
+      description: Post a draft journal entry to the general ledger
+      parameters:
+      - description: Journal Entry ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Post a journal entry
+      tags:
+      - Finance - Journal Entries
+  /api/v1/finance/journal-entries/{id}/reverse:
+    post:
+      parameters:
+      - description: Journal Entry ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Reverse a journal entry
+      tags:
+      - Finance - Journal Entries
+  /api/v1/finance/reports/ar-aging:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get accounts receivable aging report
+      tags:
+      - Finance - Reports
+  /api/v1/finance/reports/balance-sheet:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get balance sheet report
+      tags:
+      - Finance - Reports
+  /api/v1/finance/reports/profit-loss:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get profit & loss report
+      tags:
+      - Finance - Reports
+  /api/v1/finance/reports/trial-balance:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get trial balance report
+      tags:
+      - Finance - Reports
+  /api/v1/finance/tax/calculate:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Tax calculation input
+        in: body
+        name: request
+        required: true
+        schema:
+          additionalProperties: true
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Calculate tax
+      tags:
+      - Finance - Tax
+  /api/v1/hr/attendance:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: List attendance records
+      tags:
+      - HR - Attendance
+  /api/v1/hr/attendance/clock-in:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Clock-in data
+        in: body
+        name: data
+        required: true
+        schema:
+          additionalProperties: true
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Clock in attendance
+      tags:
+      - HR - Attendance
+  /api/v1/hr/attendance/clock-out:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Clock-out data
+        in: body
+        name: data
+        required: true
+        schema:
+          additionalProperties: true
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Clock out attendance
+      tags:
+      - HR - Attendance
+  /api/v1/hr/dashboard:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get HR dashboard
+      tags:
+      - HR - Dashboard
+  /api/v1/hr/departments:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: List all departments
+      tags:
+      - HR - Departments
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Department data
+        in: body
+        name: dept
+        required: true
+        schema:
+          additionalProperties: true
+          type: object
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Create a new department
+      tags:
+      - HR - Departments
+  /api/v1/hr/departments/{id}:
+    get:
+      parameters:
+      - description: Department ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get a department by ID
+      tags:
+      - HR - Departments
+  /api/v1/hr/employees:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: List all employees
+      tags:
+      - HR - Employees
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Employee data
+        in: body
+        name: employee
+        required: true
+        schema:
+          additionalProperties: true
+          type: object
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Create a new employee
+      tags:
+      - HR - Employees
+  /api/v1/hr/employees/{id}:
+    get:
+      parameters:
+      - description: Employee ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get an employee by ID
+      tags:
+      - HR - Employees
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Employee ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Updated employee data
+        in: body
+        name: employee
+        required: true
+        schema:
+          additionalProperties: true
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Update an employee
+      tags:
+      - HR - Employees
+  /api/v1/hr/employees/{id}/terminate:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Employee ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Termination data
+        in: body
+        name: data
+        required: true
+        schema:
+          additionalProperties: true
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Terminate an employee
+      tags:
+      - HR - Employees
+  /api/v1/hr/leave/{id}/approve:
+    post:
+      parameters:
+      - description: Leave Request ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Approve a leave request
+      tags:
+      - HR - Leave Management
+  /api/v1/hr/leave/{id}/reject:
+    post:
+      parameters:
+      - description: Leave Request ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Reject a leave request
+      tags:
+      - HR - Leave Management
+  /api/v1/hr/leave/balance/{employeeId}:
+    get:
+      parameters:
+      - description: Employee ID
+        in: path
+        name: employeeId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get leave balance for an employee
+      tags:
+      - HR - Leave Management
+  /api/v1/hr/leave/request:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Leave request data
+        in: body
+        name: leave
+        required: true
+        schema:
+          additionalProperties: true
+          type: object
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Submit a leave request
+      tags:
+      - HR - Leave Management
+  /api/v1/hr/leave/requests:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: List all leave requests
+      tags:
+      - HR - Leave Management
+  /api/v1/hr/payroll:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: List all payroll runs
+      tags:
+      - HR - Payroll
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Payroll run data
+        in: body
+        name: payroll
+        required: true
+        schema:
+          additionalProperties: true
+          type: object
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Create a payroll run
+      tags:
+      - HR - Payroll
+  /api/v1/hr/payroll/{runId}:
+    get:
+      parameters:
+      - description: Payroll Run ID
+        in: path
+        name: runId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get a payroll run by ID
+      tags:
+      - HR - Payroll
+  /api/v1/hr/payroll/{runId}/approve:
+    post:
+      parameters:
+      - description: Payroll Run ID
+        in: path
+        name: runId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Approve a payroll run
+      tags:
+      - HR - Payroll
+  /api/v1/hr/payroll/{runId}/calculate:
+    post:
+      parameters:
+      - description: Payroll Run ID
+        in: path
+        name: runId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Calculate payroll for a run
+      tags:
+      - HR - Payroll
+  /api/v1/hr/payroll/{runId}/payslip/{employeeId}:
+    get:
+      parameters:
+      - description: Payroll Run ID
+        in: path
+        name: runId
+        required: true
+        type: string
+      - description: Employee ID
+        in: path
+        name: employeeId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get a pay slip
+      tags:
+      - HR - Payroll
+  /api/v1/hr/payroll/{runId}/process:
+    post:
+      parameters:
+      - description: Payroll Run ID
+        in: path
+        name: runId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Process a payroll run
+      tags:
+      - HR - Payroll
+  /api/v1/inventory/categories:
+    get:
+      description: Retrieve all product categories
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: List all categories
+      tags:
+      - Inventory - Categories
+    post:
+      consumes:
+      - application/json
+      description: Create a new product category
+      parameters:
+      - description: Category data (name, description)
+        in: body
+        name: category
+        required: true
+        schema:
+          additionalProperties: true
+          type: object
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Create a new category
+      tags:
+      - Inventory - Categories
+  /api/v1/inventory/products:
+    get:
+      description: Retrieve a paginated list of products with optional filters
+      parameters:
+      - default: "1"
+        description: Page number
+        in: query
+        name: page
+        type: string
+      - default: "20"
+        description: Items per page
+        in: query
+        name: page_size
+        type: string
+      - description: Filter by category
+        in: query
+        name: category_id
+        type: string
+      - default: ACTIVE
+        description: Filter by status
+        in: query
+        name: status
+        type: string
+      - description: Search query
+        in: query
+        name: q
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: List all products
+      tags:
+      - Inventory - Products
+    post:
+      consumes:
+      - application/json
+      description: Create a new product in the inventory system
+      parameters:
+      - description: Product data (name, sku, category_id, price, etc.)
+        in: body
+        name: product
+        required: true
+        schema:
+          additionalProperties: true
+          type: object
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Product created successfully
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Invalid request body
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Create a new product
+      tags:
+      - Inventory - Products
+  /api/v1/inventory/products/{id}:
+    get:
+      description: Retrieve a single product by its ID
+      parameters:
+      - description: Product ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get a product by ID
+      tags:
+      - Inventory - Products
+    put:
+      consumes:
+      - application/json
+      description: Update an existing product by its ID
+      parameters:
+      - description: Product ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Updated product data
+        in: body
+        name: product
+        required: true
+        schema:
+          additionalProperties: true
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Update a product
+      tags:
+      - Inventory - Products
+  /api/v1/inventory/stock/{productId}:
+    get:
+      description: Retrieve stock levels across all warehouses for a given product
+      parameters:
+      - description: Product ID
+        in: path
+        name: productId
+        required: true
+        type: string
+      - description: Filter by warehouse
+        in: query
+        name: warehouse_id
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get stock levels for a product
+      tags:
+      - Inventory - Stock
+  /api/v1/inventory/stock/adjust:
+    post:
+      consumes:
+      - application/json
+      description: Manually adjust stock quantity for a product in a warehouse
+      parameters:
+      - description: Stock adjustment data (product_id, warehouse_id, quantity, reason)
+        in: body
+        name: adjustment
+        required: true
+        schema:
+          additionalProperties: true
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Adjust stock quantity
+      tags:
+      - Inventory - Stock
+  /api/v1/inventory/stock/alerts:
+    get:
+      description: Retrieve products that are below their minimum stock threshold
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get low stock alerts
+      tags:
+      - Inventory - Stock
+  /api/v1/inventory/stock/movements:
+    get:
+      description: Retrieve a history of all stock movements (adjustments, transfers,
+        etc.)
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: List stock movements
+      tags:
+      - Inventory - Stock
+  /api/v1/inventory/stock/reserve:
+    post:
+      consumes:
+      - application/json
+      description: Reserve stock quantity for a pending order
+      parameters:
+      - description: Reservation data (product_id, warehouse_id, quantity, order_id)
+        in: body
+        name: reservation
+        required: true
+        schema:
+          additionalProperties: true
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Reserve stock for an order
+      tags:
+      - Inventory - Stock
+  /api/v1/inventory/stock/transfer:
+    post:
+      consumes:
+      - application/json
+      description: Transfer stock from one warehouse to another
+      parameters:
+      - description: Transfer data (product_id, from_warehouse, to_warehouse, quantity)
+        in: body
+        name: transfer
+        required: true
+        schema:
+          additionalProperties: true
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Transfer stock between warehouses
+      tags:
+      - Inventory - Stock
+  /api/v1/inventory/warehouses:
+    post:
+      consumes:
+      - application/json
+      description: Create a new warehouse location
+      parameters:
+      - description: Warehouse data (name, code, address)
+        in: body
+        name: warehouse
+        required: true
+        schema:
+          additionalProperties: true
+          type: object
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Create a new warehouse
+      tags:
+      - Inventory - Warehouses
+  /api/v1/orders/customers:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: List all customers
+      tags:
+      - Orders - Customers
+    post:
+      consumes:
+      - application/json
+      description: Create a new customer record
+      parameters:
+      - description: Customer data
+        in: body
+        name: customer
+        required: true
+        schema:
+          additionalProperties: true
+          type: object
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Create a new customer
+      tags:
+      - Orders - Customers
+  /api/v1/orders/customers/{id}:
+    get:
+      parameters:
+      - description: Customer ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get a customer by ID
+      tags:
+      - Orders - Customers
+  /api/v1/orders/purchase:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: List all purchase orders
+      tags:
+      - Orders - Purchase Orders
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: PO data
+        in: body
+        name: order
+        required: true
+        schema:
+          additionalProperties: true
+          type: object
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Create a purchase order
+      tags:
+      - Orders - Purchase Orders
+  /api/v1/orders/purchase/{id}:
+    get:
+      parameters:
+      - description: PO ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get a purchase order by ID
+      tags:
+      - Orders - Purchase Orders
+  /api/v1/orders/purchase/{id}/receive:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: PO ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Receipt data
+        in: body
+        name: receipt
+        required: true
+        schema:
+          additionalProperties: true
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Receive a purchase order
+      tags:
+      - Orders - Purchase Orders
+  /api/v1/orders/sales:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: List all sales orders
+      tags:
+      - Orders - Sales Orders
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Order data
+        in: body
+        name: order
+        required: true
+        schema:
+          additionalProperties: true
+          type: object
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Create a new sales order
+      tags:
+      - Orders - Sales Orders
+  /api/v1/orders/sales/{id}:
+    get:
+      parameters:
+      - description: Order ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get a sales order by ID
+      tags:
+      - Orders - Sales Orders
+  /api/v1/orders/sales/{id}/approve:
+    post:
+      parameters:
+      - description: Order ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Approve a sales order
+      tags:
+      - Orders - Sales Orders
+  /api/v1/orders/sales/{id}/status:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Order ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: New status
+        in: body
+        name: status
+        required: true
+        schema:
+          additionalProperties: true
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Update order status
+      tags:
+      - Orders - Sales Orders
+  /api/v1/orders/summary:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get order summary dashboard
+      tags:
+      - Orders - Sales Orders
+  /api/v1/orders/suppliers:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: List all suppliers
+      tags:
+      - Orders - Suppliers
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Supplier data
+        in: body
+        name: supplier
+        required: true
+        schema:
+          additionalProperties: true
+          type: object
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Create a new supplier
+      tags:
+      - Orders - Suppliers
+  /api/v1/orders/suppliers/{id}:
+    get:
+      parameters:
+      - description: Supplier ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get a supplier by ID
+      tags:
+      - Orders - Suppliers
+securityDefinitions:
+  BearerAuth:
+    description: Enter your JWT token with the Bearer prefix, e.g. "Bearer eyJhbGciOiJI..."
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
+tags:
+- description: User authentication and token management
+  name: Authentication
+- description: Product catalog management
+  name: Inventory - Products
+- description: Product category management
+  name: Inventory - Categories
+- description: Warehouse management
+  name: Inventory - Warehouses
+- description: Stock level management, adjustments, transfers, and alerts
+  name: Inventory - Stock
+- description: Customer record management
+  name: Orders - Customers
+- description: Sales order lifecycle management
+  name: Orders - Sales Orders
+- description: Purchase order management
+  name: Orders - Purchase Orders
+- description: Supplier record management
+  name: Orders - Suppliers
+- description: Chart of accounts management
+  name: Finance - Accounts
+- description: General ledger journal entry management
+  name: Finance - Journal Entries
+- description: Invoice and payment management
+  name: Finance - Invoices
+- description: Tax calculation services
+  name: Finance - Tax
+- description: Financial reporting (Trial Balance, P&L, Balance Sheet, AR Aging)
+  name: Finance - Reports
+- description: Budget management
+  name: Finance - Budgets
+- description: Department management
+  name: HR - Departments
+- description: Employee lifecycle management
+  name: HR - Employees
+- description: Leave requests and approvals
+  name: HR - Leave Management
+- description: Attendance tracking (clock-in/out)
+  name: HR - Attendance
+- description: Payroll run lifecycle management
+  name: HR - Payroll
+- description: HR dashboard and analytics
+  name: HR - Dashboard

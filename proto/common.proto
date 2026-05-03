@@ -1,0 +1,78 @@
+syntax = "proto3";
+
+package erp.common;
+
+option go_package = "erp-system/proto/common";
+option java_package = "com.erp.proto.common";
+option java_multiple_files = true;
+
+import "google/protobuf/timestamp.proto";
+
+// Common pagination request
+message PaginationRequest {
+  int32 page = 1;
+  int32 page_size = 2;
+  string sort_by = 3;
+  string sort_order = 4; // ASC or DESC
+}
+
+// Common pagination response metadata
+message PaginationResponse {
+  int32 total_items = 1;
+  int32 total_pages = 2;
+  int32 current_page = 3;
+  int32 page_size = 4;
+}
+
+// Money representation with currency
+message Money {
+  int64 amount_cents = 1; // Amount in smallest currency unit (cents)
+  string currency = 2;    // ISO 4217 currency code
+}
+
+// Address
+message Address {
+  string id = 1;
+  string street_line1 = 2;
+  string street_line2 = 3;
+  string city = 4;
+  string state = 5;
+  string postal_code = 6;
+  string country = 7;
+}
+
+// Contact information
+message ContactInfo {
+  string email = 1;
+  string phone = 2;
+  string fax = 3;
+  string website = 4;
+}
+
+// Audit trail
+message AuditInfo {
+  string created_by = 1;
+  google.protobuf.Timestamp created_at = 2;
+  string updated_by = 3;
+  google.protobuf.Timestamp updated_at = 4;
+}
+
+// Generic status response
+message StatusResponse {
+  bool success = 1;
+  string message = 2;
+  string error_code = 3;
+}
+
+// Date range filter
+message DateRange {
+  google.protobuf.Timestamp start = 1;
+  google.protobuf.Timestamp end = 2;
+}
+
+// Entity reference (cross-service)
+message EntityRef {
+  string service = 1;
+  string entity_type = 2;
+  string entity_id = 3;
+}

@@ -1,0 +1,387 @@
+syntax = "proto3";
+
+package erp.order;
+
+option go_package = "erp-system/proto/order";
+option java_package = "com.erp.proto.order";
+option java_multiple_files = true;
+
+import "google/protobuf/timestamp.proto";
+import "common.proto";
+
+// ============================================================
+// Customer Management
+// ============================================================
+
+message Customer {
+  string id = 1;
+  string code = 2;
+  string company_name = 3;
+  string contact_name = 4;
+  erp.common.ContactInfo contact = 5;
+  erp.common.Address billing_address = 6;
+  erp.common.Address shipping_address = 7;
+  string tax_id = 8;
+  string payment_terms = 9;      // NET30, NET60, COD, etc.
+  erp.common.Money credit_limit = 10;
+  erp.common.Money outstanding_balance = 11;
+  CustomerStatus status = 12;
+  string tier = 13;              // BRONZE, SILVER, GOLD, PLATINUM
+  double discount_percent = 14;
+  erp.common.AuditInfo audit = 15;
+}
+
+enum CustomerStatus {
+  CUSTOMER_STATUS_UNSPECIFIED = 0;
+  CUSTOMER_STATUS_ACTIVE = 1;
+  CUSTOMER_STATUS_INACTIVE = 2;
+  CUSTOMER_STATUS_SUSPENDED = 3;
+  CUSTOMER_STATUS_BLOCKED = 4;
+}
+
+message CreateCustomerRequest {
+  string code = 1;
+  string company_name = 2;
+  string contact_name = 3;
+  erp.common.ContactInfo contact = 4;
+  erp.common.Address billing_address = 5;
+  erp.common.Address shipping_address = 6;
+  string tax_id = 7;
+  string payment_terms = 8;
+  erp.common.Money credit_limit = 9;
+  string tier = 10;
+  double discount_percent = 11;
+  string created_by = 12;
+}
+
+message GetCustomerRequest {
+  string id = 1;
+}
+
+message ListCustomersRequest {
+  erp.common.PaginationRequest pagination = 1;
+  string search_term = 2;
+  CustomerStatus status = 3;
+  string tier = 4;
+}
+
+message ListCustomersResponse {
+  repeated Customer customers = 1;
+  erp.common.PaginationResponse pagination = 2;
+}
+
+// ============================================================
+// Sales Order Management
+// ============================================================
+
+message SalesOrder {
+  string id = 1;
+  string order_number = 2;
+  string customer_id = 3;
+  string customer_name = 4;
+  OrderStatus status = 5;
+  OrderPriority priority = 6;
+  repeated OrderLine lines = 7;
+  erp.common.Address shipping_address = 8;
+  string shipping_method = 9;
+  erp.common.Money subtotal = 10;
+  erp.common.Money tax_amount = 11;
+  erp.common.Money shipping_cost = 12;
+  erp.common.Money discount_amount = 13;
+  erp.common.Money total_amount = 14;
+  string payment_terms = 15;
+  string notes = 16;
+  string warehouse_id = 17;
+  google.protobuf.Timestamp order_date = 18;
+  google.protobuf.Timestamp required_date = 19;
+  google.protobuf.Timestamp shipped_date = 20;
+  string invoice_id = 21;
+  erp.common.AuditInfo audit = 22;
+}
+
+enum OrderStatus {
+  ORDER_STATUS_UNSPECIFIED = 0;
+  ORDER_STATUS_DRAFT = 1;
+  ORDER_STATUS_PENDING_APPROVAL = 2;
+  ORDER_STATUS_APPROVED = 3;
+  ORDER_STATUS_PROCESSING = 4;
+  ORDER_STATUS_PICKING = 5;
+  ORDER_STATUS_PACKED = 6;
+  ORDER_STATUS_SHIPPED = 7;
+  ORDER_STATUS_DELIVERED = 8;
+  ORDER_STATUS_CANCELLED = 9;
+  ORDER_STATUS_RETURNED = 10;
+  ORDER_STATUS_ON_HOLD = 11;
+}
+
+enum OrderPriority {
+  ORDER_PRIORITY_UNSPECIFIED = 0;
+  ORDER_PRIORITY_LOW = 1;
+  ORDER_PRIORITY_NORMAL = 2;
+  ORDER_PRIORITY_HIGH = 3;
+  ORDER_PRIORITY_URGENT = 4;
+}
+
+message OrderLine {
+  string id = 1;
+  int32 line_number = 2;
+  string product_id = 3;
+  string product_name = 4;
+  string sku = 5;
+  int32 quantity_ordered = 6;
+  int32 quantity_shipped = 7;
+  int32 quantity_returned = 8;
+  erp.common.Money unit_price = 9;
+  double discount_percent = 10;
+  erp.common.Money line_total = 11;
+  erp.common.Money tax_amount = 12;
+  string tax_category = 13;
+  string notes = 14;
+}
+
+message CreateOrderRequest {
+  string customer_id = 1;
+  OrderPriority priority = 2;
+  repeated CreateOrderLineRequest lines = 3;
+  erp.common.Address shipping_address = 4;
+  string shipping_method = 5;
+  string payment_terms = 6;
+  string notes = 7;
+  string warehouse_id = 8;
+  google.protobuf.Timestamp required_date = 9;
+  string created_by = 10;
+}
+
+message CreateOrderLineRequest {
+  string product_id = 1;
+  int32 quantity = 2;
+  erp.common.Money unit_price = 3;
+  double discount_percent = 4;
+  string tax_category = 5;
+  string notes = 6;
+}
+
+message GetOrderRequest {
+  string id = 1;
+}
+
+message ListOrdersRequest {
+  erp.common.PaginationRequest pagination = 1;
+  string customer_id = 2;
+  OrderStatus status = 3;
+  OrderPriority priority = 4;
+  erp.common.DateRange date_range = 5;
+  string search_term = 6;
+}
+
+message ListOrdersResponse {
+  repeated SalesOrder orders = 1;
+  erp.common.PaginationResponse pagination = 2;
+}
+
+message UpdateOrderStatusRequest {
+  string id = 1;
+  OrderStatus new_status = 2;
+  string notes = 3;
+  string updated_by = 4;
+}
+
+message ApproveOrderRequest {
+  string id = 1;
+  string approved_by = 2;
+  string notes = 3;
+}
+
+// ============================================================
+// Purchase Order Management
+// ============================================================
+
+message PurchaseOrder {
+  string id = 1;
+  string po_number = 2;
+  string supplier_id = 3;
+  string supplier_name = 4;
+  PurchaseOrderStatus status = 5;
+  repeated PurchaseOrderLine lines = 6;
+  erp.common.Money subtotal = 7;
+  erp.common.Money tax_amount = 8;
+  erp.common.Money total_amount = 9;
+  string payment_terms = 10;
+  string delivery_terms = 11;
+  string warehouse_id = 12;
+  google.protobuf.Timestamp order_date = 13;
+  google.protobuf.Timestamp expected_delivery = 14;
+  google.protobuf.Timestamp actual_delivery = 15;
+  string notes = 16;
+  erp.common.AuditInfo audit = 17;
+}
+
+enum PurchaseOrderStatus {
+  PO_STATUS_UNSPECIFIED = 0;
+  PO_STATUS_DRAFT = 1;
+  PO_STATUS_PENDING_APPROVAL = 2;
+  PO_STATUS_APPROVED = 3;
+  PO_STATUS_SENT_TO_SUPPLIER = 4;
+  PO_STATUS_PARTIALLY_RECEIVED = 5;
+  PO_STATUS_RECEIVED = 6;
+  PO_STATUS_CANCELLED = 7;
+}
+
+message PurchaseOrderLine {
+  string id = 1;
+  int32 line_number = 2;
+  string product_id = 3;
+  string product_name = 4;
+  int32 quantity_ordered = 5;
+  int32 quantity_received = 6;
+  erp.common.Money unit_cost = 7;
+  erp.common.Money line_total = 8;
+}
+
+message CreatePurchaseOrderRequest {
+  string supplier_id = 1;
+  repeated CreatePurchaseOrderLineRequest lines = 2;
+  string payment_terms = 3;
+  string delivery_terms = 4;
+  string warehouse_id = 5;
+  google.protobuf.Timestamp expected_delivery = 6;
+  string notes = 7;
+  string created_by = 8;
+}
+
+message CreatePurchaseOrderLineRequest {
+  string product_id = 1;
+  int32 quantity = 2;
+  erp.common.Money unit_cost = 3;
+}
+
+message ReceivePurchaseOrderRequest {
+  string po_id = 1;
+  repeated ReceiveLineRequest lines = 2;
+  string received_by = 3;
+  string notes = 4;
+}
+
+message ReceiveLineRequest {
+  string line_id = 1;
+  int32 quantity_received = 2;
+}
+
+message GetPurchaseOrderRequest {
+  string id = 1;
+}
+
+message ListPurchaseOrdersRequest {
+  erp.common.PaginationRequest pagination = 1;
+  string supplier_id = 2;
+  PurchaseOrderStatus status = 3;
+  erp.common.DateRange date_range = 4;
+}
+
+message ListPurchaseOrdersResponse {
+  repeated PurchaseOrder orders = 1;
+  erp.common.PaginationResponse pagination = 2;
+}
+
+// ============================================================
+// Supplier Management
+// ============================================================
+
+message Supplier {
+  string id = 1;
+  string code = 2;
+  string company_name = 3;
+  string contact_name = 4;
+  erp.common.ContactInfo contact = 5;
+  erp.common.Address address = 6;
+  string tax_id = 7;
+  string payment_terms = 8;
+  string rating = 9;
+  SupplierStatus status = 10;
+  erp.common.AuditInfo audit = 11;
+}
+
+enum SupplierStatus {
+  SUPPLIER_STATUS_UNSPECIFIED = 0;
+  SUPPLIER_STATUS_ACTIVE = 1;
+  SUPPLIER_STATUS_INACTIVE = 2;
+  SUPPLIER_STATUS_BLACKLISTED = 3;
+}
+
+message CreateSupplierRequest {
+  string code = 1;
+  string company_name = 2;
+  string contact_name = 3;
+  erp.common.ContactInfo contact = 4;
+  erp.common.Address address = 5;
+  string tax_id = 6;
+  string payment_terms = 7;
+  string created_by = 8;
+}
+
+message GetSupplierRequest {
+  string id = 1;
+}
+
+message ListSuppliersRequest {
+  erp.common.PaginationRequest pagination = 1;
+  string search_term = 2;
+  SupplierStatus status = 3;
+}
+
+message ListSuppliersResponse {
+  repeated Supplier suppliers = 1;
+  erp.common.PaginationResponse pagination = 2;
+}
+
+// ============================================================
+// Order Analytics
+// ============================================================
+
+message OrderSummaryRequest {
+  erp.common.DateRange date_range = 1;
+  string customer_id = 2;
+}
+
+message OrderSummary {
+  int32 total_orders = 1;
+  int32 pending_orders = 2;
+  int32 processing_orders = 3;
+  int32 shipped_orders = 4;
+  int32 cancelled_orders = 5;
+  erp.common.Money total_revenue = 6;
+  erp.common.Money average_order_value = 7;
+  double fulfillment_rate = 8;
+}
+
+// ============================================================
+// Service Definition
+// ============================================================
+
+service OrderService {
+  // Customer management
+  rpc CreateCustomer(CreateCustomerRequest) returns (Customer);
+  rpc GetCustomer(GetCustomerRequest) returns (Customer);
+  rpc ListCustomers(ListCustomersRequest) returns (ListCustomersResponse);
+
+  // Sales order management
+  rpc CreateOrder(CreateOrderRequest) returns (SalesOrder);
+  rpc GetOrder(GetOrderRequest) returns (SalesOrder);
+  rpc ListOrders(ListOrdersRequest) returns (ListOrdersResponse);
+  rpc UpdateOrderStatus(UpdateOrderStatusRequest) returns (SalesOrder);
+  rpc ApproveOrder(ApproveOrderRequest) returns (SalesOrder);
+
+  // Purchase order management
+  rpc CreatePurchaseOrder(CreatePurchaseOrderRequest) returns (PurchaseOrder);
+  rpc GetPurchaseOrder(GetPurchaseOrderRequest) returns (PurchaseOrder);
+  rpc ListPurchaseOrders(ListPurchaseOrdersRequest) returns (ListPurchaseOrdersResponse);
+  rpc ReceivePurchaseOrder(ReceivePurchaseOrderRequest) returns (erp.common.StatusResponse);
+
+  // Supplier management
+  rpc CreateSupplier(CreateSupplierRequest) returns (Supplier);
+  rpc GetSupplier(GetSupplierRequest) returns (Supplier);
+  rpc ListSuppliers(ListSuppliersRequest) returns (ListSuppliersResponse);
+
+  // Analytics
+  rpc GetOrderSummary(OrderSummaryRequest) returns (OrderSummary);
+}

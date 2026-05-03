@@ -1,0 +1,529 @@
+syntax = "proto3";
+
+package erp.finance;
+
+option go_package = "erp-system/proto/finance";
+option java_package = "com.erp.proto.finance";
+option java_multiple_files = true;
+
+import "google/protobuf/timestamp.proto";
+import "common.proto";
+
+// ============================================================
+// Chart of Accounts
+// ============================================================
+
+message Account {
+  string id = 1;
+  string account_number = 2;
+  string name = 3;
+  string description = 4;
+  AccountType type = 5;
+  AccountSubType sub_type = 6;
+  string parent_id = 7;
+  erp.common.Money balance = 8;
+  NormalBalance normal_balance = 9;
+  bool is_active = 10;
+  bool is_system = 11;      // system accounts cannot be deleted
+  string tax_code = 12;
+  erp.common.AuditInfo audit = 13;
+}
+
+enum AccountType {
+  ACCOUNT_TYPE_UNSPECIFIED = 0;
+  ACCOUNT_TYPE_ASSET = 1;
+  ACCOUNT_TYPE_LIABILITY = 2;
+  ACCOUNT_TYPE_EQUITY = 3;
+  ACCOUNT_TYPE_REVENUE = 4;
+  ACCOUNT_TYPE_EXPENSE = 5;
+}
+
+enum AccountSubType {
+  ACCOUNT_SUB_TYPE_UNSPECIFIED = 0;
+  // Assets
+  ACCOUNT_SUB_TYPE_CASH = 1;
+  ACCOUNT_SUB_TYPE_BANK = 2;
+  ACCOUNT_SUB_TYPE_ACCOUNTS_RECEIVABLE = 3;
+  ACCOUNT_SUB_TYPE_INVENTORY = 4;
+  ACCOUNT_SUB_TYPE_FIXED_ASSET = 5;
+  ACCOUNT_SUB_TYPE_PREPAID = 6;
+  // Liabilities
+  ACCOUNT_SUB_TYPE_ACCOUNTS_PAYABLE = 7;
+  ACCOUNT_SUB_TYPE_ACCRUED = 8;
+  ACCOUNT_SUB_TYPE_LONG_TERM_DEBT = 9;
+  ACCOUNT_SUB_TYPE_TAX_PAYABLE = 10;
+  // Equity
+  ACCOUNT_SUB_TYPE_RETAINED_EARNINGS = 11;
+  ACCOUNT_SUB_TYPE_COMMON_STOCK = 12;
+  // Revenue
+  ACCOUNT_SUB_TYPE_SALES_REVENUE = 13;
+  ACCOUNT_SUB_TYPE_SERVICE_REVENUE = 14;
+  ACCOUNT_SUB_TYPE_OTHER_INCOME = 15;
+  // Expenses
+  ACCOUNT_SUB_TYPE_COST_OF_GOODS = 16;
+  ACCOUNT_SUB_TYPE_OPERATING_EXPENSE = 17;
+  ACCOUNT_SUB_TYPE_PAYROLL_EXPENSE = 18;
+  ACCOUNT_SUB_TYPE_DEPRECIATION = 19;
+  ACCOUNT_SUB_TYPE_INTEREST_EXPENSE = 20;
+  ACCOUNT_SUB_TYPE_TAX_EXPENSE = 21;
+}
+
+enum NormalBalance {
+  NORMAL_BALANCE_UNSPECIFIED = 0;
+  NORMAL_BALANCE_DEBIT = 1;
+  NORMAL_BALANCE_CREDIT = 2;
+}
+
+message CreateAccountRequest {
+  string account_number = 1;
+  string name = 2;
+  string description = 3;
+  AccountType type = 4;
+  AccountSubType sub_type = 5;
+  string parent_id = 6;
+  string tax_code = 7;
+  string created_by = 8;
+}
+
+message GetAccountRequest {
+  string id = 1;
+  string account_number = 2;
+}
+
+message ListAccountsRequest {
+  AccountType type = 1;
+  bool active_only = 2;
+  string search_term = 3;
+  erp.common.PaginationRequest pagination = 4;
+}
+
+message ListAccountsResponse {
+  repeated Account accounts = 1;
+  erp.common.PaginationResponse pagination = 2;
+}
+
+// ============================================================
+// Journal Entries (Double-Entry Bookkeeping)
+// ============================================================
+
+message JournalEntry {
+  string id = 1;
+  string entry_number = 2;
+  google.protobuf.Timestamp entry_date = 3;
+  string description = 4;
+  repeated JournalLine lines = 5;
+  JournalEntryStatus status = 6;
+  string source_type = 7;     // MANUAL, SALES_INVOICE, PURCHASE, PAYROLL
+  string source_id = 8;
+  string fiscal_period = 9;
+  erp.common.Money total_debit = 10;
+  erp.common.Money total_credit = 11;
+  erp.common.AuditInfo audit = 12;
+}
+
+enum JournalEntryStatus {
+  JOURNAL_STATUS_UNSPECIFIED = 0;
+  JOURNAL_STATUS_DRAFT = 1;
+  JOURNAL_STATUS_POSTED = 2;
+  JOURNAL_STATUS_REVERSED = 3;
+}
+
+message JournalLine {
+  string id = 1;
+  int32 line_number = 2;
+  string account_id = 3;
+  string account_number = 4;
+  string account_name = 5;
+  erp.common.Money debit_amount = 6;
+  erp.common.Money credit_amount = 7;
+  string description = 8;
+  string department_id = 9;
+  string cost_center = 10;
+}
+
+message CreateJournalEntryRequest {
+  google.protobuf.Timestamp entry_date = 1;
+  string description = 2;
+  repeated CreateJournalLineRequest lines = 3;
+  string source_type = 4;
+  string source_id = 5;
+  string created_by = 6;
+}
+
+message CreateJournalLineRequest {
+  string account_id = 1;
+  erp.common.Money debit_amount = 2;
+  erp.common.Money credit_amount = 3;
+  string description = 4;
+  string department_id = 5;
+  string cost_center = 6;
+}
+
+message PostJournalEntryRequest {
+  string id = 1;
+  string posted_by = 2;
+}
+
+message ReverseJournalEntryRequest {
+  string id = 1;
+  string reason = 2;
+  string reversed_by = 3;
+}
+
+message GetJournalEntryRequest {
+  string id = 1;
+}
+
+message ListJournalEntriesRequest {
+  erp.common.PaginationRequest pagination = 1;
+  JournalEntryStatus status = 2;
+  string source_type = 3;
+  erp.common.DateRange date_range = 4;
+  string account_id = 5;
+}
+
+message ListJournalEntriesResponse {
+  repeated JournalEntry entries = 1;
+  erp.common.PaginationResponse pagination = 2;
+}
+
+// ============================================================
+// Invoice Management
+// ============================================================
+
+message Invoice {
+  string id = 1;
+  string invoice_number = 2;
+  InvoiceType type = 3;
+  string customer_id = 4;
+  string customer_name = 5;
+  string order_id = 6;
+  InvoiceStatus status = 7;
+  repeated InvoiceLine lines = 8;
+  erp.common.Money subtotal = 9;
+  erp.common.Money tax_amount = 10;
+  erp.common.Money discount_amount = 11;
+  erp.common.Money total_amount = 12;
+  erp.common.Money amount_paid = 13;
+  erp.common.Money amount_due = 14;
+  string payment_terms = 15;
+  google.protobuf.Timestamp invoice_date = 16;
+  google.protobuf.Timestamp due_date = 17;
+  google.protobuf.Timestamp paid_date = 18;
+  string notes = 19;
+  string journal_entry_id = 20;
+  erp.common.AuditInfo audit = 21;
+}
+
+enum InvoiceType {
+  INVOICE_TYPE_UNSPECIFIED = 0;
+  INVOICE_TYPE_SALES = 1;
+  INVOICE_TYPE_PURCHASE = 2;
+  INVOICE_TYPE_CREDIT_NOTE = 3;
+  INVOICE_TYPE_DEBIT_NOTE = 4;
+}
+
+enum InvoiceStatus {
+  INVOICE_STATUS_UNSPECIFIED = 0;
+  INVOICE_STATUS_DRAFT = 1;
+  INVOICE_STATUS_SENT = 2;
+  INVOICE_STATUS_PARTIALLY_PAID = 3;
+  INVOICE_STATUS_PAID = 4;
+  INVOICE_STATUS_OVERDUE = 5;
+  INVOICE_STATUS_CANCELLED = 6;
+  INVOICE_STATUS_VOID = 7;
+}
+
+message InvoiceLine {
+  string id = 1;
+  int32 line_number = 2;
+  string description = 3;
+  string product_id = 4;
+  int32 quantity = 5;
+  erp.common.Money unit_price = 6;
+  double tax_rate = 7;
+  erp.common.Money tax_amount = 8;
+  erp.common.Money line_total = 9;
+  string account_id = 10;
+}
+
+message CreateInvoiceRequest {
+  InvoiceType type = 1;
+  string customer_id = 2;
+  string order_id = 3;
+  repeated CreateInvoiceLineRequest lines = 4;
+  string payment_terms = 5;
+  google.protobuf.Timestamp invoice_date = 6;
+  string notes = 7;
+  string created_by = 8;
+}
+
+message CreateInvoiceLineRequest {
+  string description = 1;
+  string product_id = 2;
+  int32 quantity = 3;
+  erp.common.Money unit_price = 4;
+  double tax_rate = 5;
+  string account_id = 6;
+}
+
+message RecordPaymentRequest {
+  string invoice_id = 1;
+  erp.common.Money amount = 2;
+  string payment_method = 3;   // CASH, CHECK, WIRE, CREDIT_CARD
+  string reference_number = 4;
+  google.protobuf.Timestamp payment_date = 5;
+  string bank_account_id = 6;
+  string notes = 7;
+  string recorded_by = 8;
+}
+
+message GetInvoiceRequest {
+  string id = 1;
+}
+
+message ListInvoicesRequest {
+  erp.common.PaginationRequest pagination = 1;
+  InvoiceType type = 2;
+  InvoiceStatus status = 3;
+  string customer_id = 4;
+  erp.common.DateRange date_range = 5;
+  bool overdue_only = 6;
+}
+
+message ListInvoicesResponse {
+  repeated Invoice invoices = 1;
+  erp.common.PaginationResponse pagination = 2;
+}
+
+// ============================================================
+// Tax Management
+// ============================================================
+
+message TaxRate {
+  string id = 1;
+  string code = 2;
+  string name = 3;
+  double rate = 4;
+  string region = 5;
+  bool is_active = 6;
+  google.protobuf.Timestamp effective_from = 7;
+  google.protobuf.Timestamp effective_to = 8;
+}
+
+message CalculateTaxRequest {
+  erp.common.Money amount = 1;
+  string tax_code = 2;
+  string region = 3;
+  google.protobuf.Timestamp transaction_date = 4;
+}
+
+message CalculateTaxResponse {
+  erp.common.Money tax_amount = 1;
+  double effective_rate = 2;
+  string tax_code = 3;
+}
+
+// ============================================================
+// Financial Reports
+// ============================================================
+
+message TrialBalanceRequest {
+  google.protobuf.Timestamp as_of_date = 1;
+}
+
+message TrialBalanceResponse {
+  repeated TrialBalanceLine lines = 1;
+  erp.common.Money total_debit = 2;
+  erp.common.Money total_credit = 3;
+  bool is_balanced = 4;
+}
+
+message TrialBalanceLine {
+  string account_number = 1;
+  string account_name = 2;
+  AccountType account_type = 3;
+  erp.common.Money debit_balance = 4;
+  erp.common.Money credit_balance = 5;
+}
+
+message ProfitLossRequest {
+  erp.common.DateRange period = 1;
+  string department_id = 2;
+}
+
+message ProfitLossResponse {
+  repeated ProfitLossSection revenue_sections = 1;
+  repeated ProfitLossSection expense_sections = 2;
+  erp.common.Money total_revenue = 3;
+  erp.common.Money total_expenses = 4;
+  erp.common.Money net_income = 5;
+  erp.common.DateRange period = 6;
+}
+
+message ProfitLossSection {
+  string name = 1;
+  repeated ProfitLossLine lines = 2;
+  erp.common.Money section_total = 3;
+}
+
+message ProfitLossLine {
+  string account_number = 1;
+  string account_name = 2;
+  erp.common.Money amount = 3;
+}
+
+message BalanceSheetRequest {
+  google.protobuf.Timestamp as_of_date = 1;
+}
+
+message BalanceSheetResponse {
+  repeated BalanceSheetSection asset_sections = 1;
+  repeated BalanceSheetSection liability_sections = 2;
+  repeated BalanceSheetSection equity_sections = 3;
+  erp.common.Money total_assets = 4;
+  erp.common.Money total_liabilities = 5;
+  erp.common.Money total_equity = 6;
+  bool is_balanced = 7;
+  google.protobuf.Timestamp as_of_date = 8;
+}
+
+message BalanceSheetSection {
+  string name = 1;
+  repeated BalanceSheetLine lines = 2;
+  erp.common.Money section_total = 3;
+}
+
+message BalanceSheetLine {
+  string account_number = 1;
+  string account_name = 2;
+  erp.common.Money amount = 3;
+}
+
+message AccountsReceivableAgingRequest {
+  google.protobuf.Timestamp as_of_date = 1;
+}
+
+message AccountsReceivableAgingResponse {
+  repeated AgingBucket buckets = 1;
+  erp.common.Money total_outstanding = 2;
+}
+
+message AgingBucket {
+  string label = 1;          // "Current", "1-30", "31-60", "61-90", "90+"
+  int32 days_min = 2;
+  int32 days_max = 3;
+  erp.common.Money amount = 4;
+  int32 invoice_count = 5;
+  repeated AgingDetail details = 6;
+}
+
+message AgingDetail {
+  string invoice_id = 1;
+  string invoice_number = 2;
+  string customer_name = 3;
+  erp.common.Money amount_due = 4;
+  int32 days_overdue = 5;
+}
+
+// ============================================================
+// Budget Management
+// ============================================================
+
+message Budget {
+  string id = 1;
+  string name = 2;
+  string fiscal_year = 3;
+  string department_id = 4;
+  BudgetStatus status = 5;
+  repeated BudgetLine lines = 6;
+  erp.common.Money total_budget = 7;
+  erp.common.Money total_actual = 8;
+  erp.common.Money variance = 9;
+  erp.common.AuditInfo audit = 10;
+}
+
+enum BudgetStatus {
+  BUDGET_STATUS_UNSPECIFIED = 0;
+  BUDGET_STATUS_DRAFT = 1;
+  BUDGET_STATUS_APPROVED = 2;
+  BUDGET_STATUS_ACTIVE = 3;
+  BUDGET_STATUS_CLOSED = 4;
+}
+
+message BudgetLine {
+  string id = 1;
+  string account_id = 2;
+  string account_name = 3;
+  string period = 4;         // e.g., "2025-Q1", "2025-01"
+  erp.common.Money budgeted_amount = 5;
+  erp.common.Money actual_amount = 6;
+  erp.common.Money variance = 7;
+  double variance_percent = 8;
+}
+
+message CreateBudgetRequest {
+  string name = 1;
+  string fiscal_year = 2;
+  string department_id = 3;
+  repeated CreateBudgetLineRequest lines = 4;
+  string created_by = 5;
+}
+
+message CreateBudgetLineRequest {
+  string account_id = 1;
+  string period = 2;
+  erp.common.Money budgeted_amount = 3;
+}
+
+message GetBudgetRequest {
+  string id = 1;
+}
+
+message ListBudgetsRequest {
+  string fiscal_year = 1;
+  string department_id = 2;
+  BudgetStatus status = 3;
+}
+
+message ListBudgetsResponse {
+  repeated Budget budgets = 1;
+}
+
+// ============================================================
+// Service Definition
+// ============================================================
+
+service FinanceService {
+  // Chart of Accounts
+  rpc CreateAccount(CreateAccountRequest) returns (Account);
+  rpc GetAccount(GetAccountRequest) returns (Account);
+  rpc ListAccounts(ListAccountsRequest) returns (ListAccountsResponse);
+
+  // Journal Entries
+  rpc CreateJournalEntry(CreateJournalEntryRequest) returns (JournalEntry);
+  rpc GetJournalEntry(GetJournalEntryRequest) returns (JournalEntry);
+  rpc ListJournalEntries(ListJournalEntriesRequest) returns (ListJournalEntriesResponse);
+  rpc PostJournalEntry(PostJournalEntryRequest) returns (JournalEntry);
+  rpc ReverseJournalEntry(ReverseJournalEntryRequest) returns (JournalEntry);
+
+  // Invoicing
+  rpc CreateInvoice(CreateInvoiceRequest) returns (Invoice);
+  rpc GetInvoice(GetInvoiceRequest) returns (Invoice);
+  rpc ListInvoices(ListInvoicesRequest) returns (ListInvoicesResponse);
+  rpc RecordPayment(RecordPaymentRequest) returns (Invoice);
+
+  // Tax
+  rpc CalculateTax(CalculateTaxRequest) returns (CalculateTaxResponse);
+
+  // Financial Reports
+  rpc GetTrialBalance(TrialBalanceRequest) returns (TrialBalanceResponse);
+  rpc GetProfitAndLoss(ProfitLossRequest) returns (ProfitLossResponse);
+  rpc GetBalanceSheet(BalanceSheetRequest) returns (BalanceSheetResponse);
+  rpc GetAccountsReceivableAging(AccountsReceivableAgingRequest) returns (AccountsReceivableAgingResponse);
+
+  // Budgets
+  rpc CreateBudget(CreateBudgetRequest) returns (Budget);
+  rpc GetBudget(GetBudgetRequest) returns (Budget);
+  rpc ListBudgets(ListBudgetsRequest) returns (ListBudgetsResponse);
+}

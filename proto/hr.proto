@@ -1,0 +1,524 @@
+syntax = "proto3";
+
+package erp.hr;
+
+option go_package = "erp-system/proto/hr";
+option java_package = "com.erp.proto.hr";
+option java_multiple_files = true;
+
+import "google/protobuf/timestamp.proto";
+import "common.proto";
+
+// ============================================================
+// Department Management
+// ============================================================
+
+message Department {
+  string id = 1;
+  string code = 2;
+  string name = 3;
+  string description = 4;
+  string parent_id = 5;
+  string manager_id = 6;
+  string manager_name = 7;
+  int32 employee_count = 8;
+  erp.common.Money budget = 9;
+  bool is_active = 10;
+  erp.common.AuditInfo audit = 11;
+}
+
+message CreateDepartmentRequest {
+  string code = 1;
+  string name = 2;
+  string description = 3;
+  string parent_id = 4;
+  string manager_id = 5;
+  erp.common.Money budget = 6;
+  string created_by = 7;
+}
+
+message GetDepartmentRequest {
+  string id = 1;
+}
+
+message ListDepartmentsRequest {
+  bool active_only = 1;
+  string parent_id = 2;
+}
+
+message ListDepartmentsResponse {
+  repeated Department departments = 1;
+}
+
+// ============================================================
+// Employee Management
+// ============================================================
+
+message Employee {
+  string id = 1;
+  string employee_number = 2;
+  string first_name = 3;
+  string last_name = 4;
+  string full_name = 5;
+  string email = 6;
+  string phone = 7;
+  google.protobuf.Timestamp date_of_birth = 8;
+  string gender = 9;
+  string national_id = 10;
+  string tax_id = 11;
+  erp.common.Address address = 12;
+
+  // Employment details
+  string department_id = 13;
+  string department_name = 14;
+  string position_title = 15;
+  string job_grade = 16;
+  string manager_id = 17;
+  string manager_name = 18;
+  EmploymentType employment_type = 19;
+  EmployeeStatus status = 20;
+  google.protobuf.Timestamp hire_date = 21;
+  google.protobuf.Timestamp termination_date = 22;
+  string termination_reason = 23;
+
+  // Compensation
+  erp.common.Money base_salary = 24;
+  string pay_frequency = 25;  // MONTHLY, BIWEEKLY, WEEKLY
+  string bank_account = 26;
+  string bank_name = 27;
+
+  // Leave balances
+  repeated LeaveBalance leave_balances = 28;
+
+  // Emergency contact
+  EmergencyContact emergency_contact = 29;
+
+  erp.common.AuditInfo audit = 30;
+}
+
+enum EmploymentType {
+  EMPLOYMENT_TYPE_UNSPECIFIED = 0;
+  EMPLOYMENT_TYPE_FULL_TIME = 1;
+  EMPLOYMENT_TYPE_PART_TIME = 2;
+  EMPLOYMENT_TYPE_CONTRACT = 3;
+  EMPLOYMENT_TYPE_INTERN = 4;
+  EMPLOYMENT_TYPE_TEMPORARY = 5;
+}
+
+enum EmployeeStatus {
+  EMPLOYEE_STATUS_UNSPECIFIED = 0;
+  EMPLOYEE_STATUS_ACTIVE = 1;
+  EMPLOYEE_STATUS_ON_LEAVE = 2;
+  EMPLOYEE_STATUS_SUSPENDED = 3;
+  EMPLOYEE_STATUS_TERMINATED = 4;
+  EMPLOYEE_STATUS_RETIRED = 5;
+}
+
+message EmergencyContact {
+  string name = 1;
+  string relationship = 2;
+  string phone = 3;
+  string email = 4;
+}
+
+message CreateEmployeeRequest {
+  string first_name = 1;
+  string last_name = 2;
+  string email = 3;
+  string phone = 4;
+  google.protobuf.Timestamp date_of_birth = 5;
+  string gender = 6;
+  string national_id = 7;
+  string tax_id = 8;
+  erp.common.Address address = 9;
+  string department_id = 10;
+  string position_title = 11;
+  string job_grade = 12;
+  string manager_id = 13;
+  EmploymentType employment_type = 14;
+  google.protobuf.Timestamp hire_date = 15;
+  erp.common.Money base_salary = 16;
+  string pay_frequency = 17;
+  string bank_account = 18;
+  string bank_name = 19;
+  EmergencyContact emergency_contact = 20;
+  string created_by = 21;
+}
+
+message UpdateEmployeeRequest {
+  string id = 1;
+  string email = 2;
+  string phone = 3;
+  erp.common.Address address = 4;
+  string department_id = 5;
+  string position_title = 6;
+  string job_grade = 7;
+  string manager_id = 8;
+  erp.common.Money base_salary = 9;
+  string bank_account = 10;
+  string bank_name = 11;
+  EmergencyContact emergency_contact = 12;
+  string updated_by = 13;
+}
+
+message TerminateEmployeeRequest {
+  string id = 1;
+  google.protobuf.Timestamp termination_date = 2;
+  string reason = 3;
+  string terminated_by = 4;
+}
+
+message GetEmployeeRequest {
+  string id = 1;
+}
+
+message ListEmployeesRequest {
+  erp.common.PaginationRequest pagination = 1;
+  string department_id = 2;
+  EmployeeStatus status = 3;
+  EmploymentType employment_type = 4;
+  string search_term = 5;
+  string manager_id = 6;
+}
+
+message ListEmployeesResponse {
+  repeated Employee employees = 1;
+  erp.common.PaginationResponse pagination = 2;
+}
+
+// ============================================================
+// Leave Management
+// ============================================================
+
+message LeaveType {
+  string id = 1;
+  string code = 2;
+  string name = 3;
+  int32 default_days_per_year = 4;
+  bool is_paid = 5;
+  bool requires_approval = 6;
+  bool allow_carry_forward = 7;
+  int32 max_carry_forward_days = 8;
+  bool is_active = 9;
+}
+
+message LeaveBalance {
+  string leave_type_id = 1;
+  string leave_type_name = 2;
+  int32 total_allocated = 3;
+  int32 used = 4;
+  int32 pending = 5;
+  int32 available = 6;
+  int32 carried_forward = 7;
+}
+
+message LeaveRequest {
+  string id = 1;
+  string employee_id = 2;
+  string employee_name = 3;
+  string leave_type_id = 4;
+  string leave_type_name = 5;
+  google.protobuf.Timestamp start_date = 6;
+  google.protobuf.Timestamp end_date = 7;
+  int32 total_days = 8;
+  string reason = 9;
+  LeaveRequestStatus status = 10;
+  string approved_by = 11;
+  string rejection_reason = 12;
+  erp.common.AuditInfo audit = 13;
+}
+
+enum LeaveRequestStatus {
+  LEAVE_REQUEST_STATUS_UNSPECIFIED = 0;
+  LEAVE_REQUEST_STATUS_PENDING = 1;
+  LEAVE_REQUEST_STATUS_APPROVED = 2;
+  LEAVE_REQUEST_STATUS_REJECTED = 3;
+  LEAVE_REQUEST_STATUS_CANCELLED = 4;
+}
+
+message SubmitLeaveRequest {
+  string employee_id = 1;
+  string leave_type_id = 2;
+  google.protobuf.Timestamp start_date = 3;
+  google.protobuf.Timestamp end_date = 4;
+  string reason = 5;
+}
+
+message ApproveLeaveRequest {
+  string leave_request_id = 1;
+  string approved_by = 2;
+  string notes = 3;
+}
+
+message RejectLeaveRequest {
+  string leave_request_id = 1;
+  string rejected_by = 2;
+  string reason = 3;
+}
+
+message ListLeaveRequestsRequest {
+  string employee_id = 1;
+  string department_id = 2;
+  LeaveRequestStatus status = 3;
+  erp.common.DateRange date_range = 4;
+  erp.common.PaginationRequest pagination = 5;
+}
+
+message ListLeaveRequestsResponse {
+  repeated LeaveRequest leave_requests = 1;
+  erp.common.PaginationResponse pagination = 2;
+}
+
+message GetLeaveBalanceRequest {
+  string employee_id = 1;
+  string fiscal_year = 2;
+}
+
+message GetLeaveBalanceResponse {
+  repeated LeaveBalance balances = 1;
+}
+
+// ============================================================
+// Attendance Management
+// ============================================================
+
+message AttendanceRecord {
+  string id = 1;
+  string employee_id = 2;
+  string employee_name = 3;
+  google.protobuf.Timestamp date = 4;
+  google.protobuf.Timestamp clock_in = 5;
+  google.protobuf.Timestamp clock_out = 6;
+  double hours_worked = 7;
+  double overtime_hours = 8;
+  AttendanceStatus status = 9;
+  string notes = 10;
+}
+
+enum AttendanceStatus {
+  ATTENDANCE_STATUS_UNSPECIFIED = 0;
+  ATTENDANCE_STATUS_PRESENT = 1;
+  ATTENDANCE_STATUS_ABSENT = 2;
+  ATTENDANCE_STATUS_LATE = 3;
+  ATTENDANCE_STATUS_HALF_DAY = 4;
+  ATTENDANCE_STATUS_ON_LEAVE = 5;
+  ATTENDANCE_STATUS_HOLIDAY = 6;
+  ATTENDANCE_STATUS_WORK_FROM_HOME = 7;
+}
+
+message ClockInRequest {
+  string employee_id = 1;
+  string notes = 2;
+}
+
+message ClockOutRequest {
+  string employee_id = 1;
+  string notes = 2;
+}
+
+message ListAttendanceRequest {
+  string employee_id = 1;
+  string department_id = 2;
+  erp.common.DateRange date_range = 3;
+  AttendanceStatus status = 4;
+  erp.common.PaginationRequest pagination = 5;
+}
+
+message ListAttendanceResponse {
+  repeated AttendanceRecord records = 1;
+  erp.common.PaginationResponse pagination = 2;
+}
+
+// ============================================================
+// Payroll Management
+// ============================================================
+
+message PayrollRun {
+  string id = 1;
+  string run_number = 2;
+  string period = 3;            // "2025-01", "2025-W04"
+  string pay_frequency = 4;
+  PayrollStatus status = 5;
+  google.protobuf.Timestamp period_start = 6;
+  google.protobuf.Timestamp period_end = 7;
+  google.protobuf.Timestamp payment_date = 8;
+  repeated PaySlip pay_slips = 9;
+  erp.common.Money total_gross = 10;
+  erp.common.Money total_deductions = 11;
+  erp.common.Money total_net = 12;
+  erp.common.Money total_employer_cost = 13;
+  int32 employee_count = 14;
+  erp.common.AuditInfo audit = 15;
+}
+
+enum PayrollStatus {
+  PAYROLL_STATUS_UNSPECIFIED = 0;
+  PAYROLL_STATUS_DRAFT = 1;
+  PAYROLL_STATUS_CALCULATED = 2;
+  PAYROLL_STATUS_APPROVED = 3;
+  PAYROLL_STATUS_PROCESSING = 4;
+  PAYROLL_STATUS_COMPLETED = 5;
+  PAYROLL_STATUS_CANCELLED = 6;
+}
+
+message PaySlip {
+  string id = 1;
+  string payroll_run_id = 2;
+  string employee_id = 3;
+  string employee_name = 4;
+  string employee_number = 5;
+  string department_name = 6;
+
+  // Earnings
+  erp.common.Money base_salary = 7;
+  repeated PayComponent earnings = 8;
+  erp.common.Money total_earnings = 9;
+
+  // Deductions
+  repeated PayComponent deductions = 10;
+  erp.common.Money total_deductions = 11;
+
+  // Employer contributions
+  repeated PayComponent employer_contributions = 12;
+  erp.common.Money total_employer_contributions = 13;
+
+  // Net pay
+  erp.common.Money net_pay = 14;
+
+  // Tax details
+  erp.common.Money income_tax = 15;
+  erp.common.Money social_security = 16;
+
+  // Working details
+  double regular_hours = 17;
+  double overtime_hours = 18;
+  int32 leave_days = 19;
+  int32 absent_days = 20;
+
+  string bank_account = 21;
+  string bank_name = 22;
+}
+
+message PayComponent {
+  string code = 1;
+  string name = 2;
+  erp.common.Money amount = 3;
+  string calculation_type = 4;  // FIXED, PERCENTAGE, FORMULA
+  double rate = 5;
+  bool is_taxable = 6;
+}
+
+message CreatePayrollRunRequest {
+  string pay_frequency = 1;
+  google.protobuf.Timestamp period_start = 2;
+  google.protobuf.Timestamp period_end = 3;
+  google.protobuf.Timestamp payment_date = 4;
+  string department_id = 5;    // empty = all departments
+  string created_by = 6;
+}
+
+message CalculatePayrollRequest {
+  string payroll_run_id = 1;
+  string calculated_by = 2;
+}
+
+message ApprovePayrollRequest {
+  string payroll_run_id = 1;
+  string approved_by = 2;
+}
+
+message ProcessPayrollRequest {
+  string payroll_run_id = 1;
+  string processed_by = 2;
+}
+
+message GetPayrollRunRequest {
+  string id = 1;
+}
+
+message ListPayrollRunsRequest {
+  string pay_frequency = 1;
+  PayrollStatus status = 2;
+  erp.common.DateRange date_range = 3;
+  erp.common.PaginationRequest pagination = 4;
+}
+
+message ListPayrollRunsResponse {
+  repeated PayrollRun runs = 1;
+  erp.common.PaginationResponse pagination = 2;
+}
+
+message GetPaySlipRequest {
+  string employee_id = 1;
+  string payroll_run_id = 2;
+}
+
+// ============================================================
+// HR Analytics
+// ============================================================
+
+message HRDashboardRequest {
+  string department_id = 1;
+}
+
+message HRDashboard {
+  int32 total_employees = 1;
+  int32 active_employees = 2;
+  int32 new_hires_this_month = 3;
+  int32 terminations_this_month = 4;
+  double turnover_rate = 5;
+  double average_tenure_years = 6;
+  int32 pending_leave_requests = 7;
+  int32 on_leave_today = 8;
+  repeated DepartmentSummary departments = 9;
+}
+
+message DepartmentSummary {
+  string department_id = 1;
+  string department_name = 2;
+  int32 employee_count = 3;
+  erp.common.Money total_payroll = 4;
+  double average_salary = 5;
+}
+
+// ============================================================
+// Service Definition
+// ============================================================
+
+service HRService {
+  // Department management
+  rpc CreateDepartment(CreateDepartmentRequest) returns (Department);
+  rpc GetDepartment(GetDepartmentRequest) returns (Department);
+  rpc ListDepartments(ListDepartmentsRequest) returns (ListDepartmentsResponse);
+
+  // Employee management
+  rpc CreateEmployee(CreateEmployeeRequest) returns (Employee);
+  rpc GetEmployee(GetEmployeeRequest) returns (Employee);
+  rpc UpdateEmployee(UpdateEmployeeRequest) returns (Employee);
+  rpc TerminateEmployee(TerminateEmployeeRequest) returns (Employee);
+  rpc ListEmployees(ListEmployeesRequest) returns (ListEmployeesResponse);
+
+  // Leave management
+  rpc SubmitLeaveRequest(SubmitLeaveRequest) returns (LeaveRequest);
+  rpc ApproveLeave(ApproveLeaveRequest) returns (LeaveRequest);
+  rpc RejectLeave(RejectLeaveRequest) returns (LeaveRequest);
+  rpc ListLeaveRequests(ListLeaveRequestsRequest) returns (ListLeaveRequestsResponse);
+  rpc GetLeaveBalance(GetLeaveBalanceRequest) returns (GetLeaveBalanceResponse);
+
+  // Attendance
+  rpc ClockIn(ClockInRequest) returns (AttendanceRecord);
+  rpc ClockOut(ClockOutRequest) returns (AttendanceRecord);
+  rpc ListAttendance(ListAttendanceRequest) returns (ListAttendanceResponse);
+
+  // Payroll
+  rpc CreatePayrollRun(CreatePayrollRunRequest) returns (PayrollRun);
+  rpc CalculatePayroll(CalculatePayrollRequest) returns (PayrollRun);
+  rpc ApprovePayroll(ApprovePayrollRequest) returns (PayrollRun);
+  rpc ProcessPayroll(ProcessPayrollRequest) returns (PayrollRun);
+  rpc GetPayrollRun(GetPayrollRunRequest) returns (PayrollRun);
+  rpc ListPayrollRuns(ListPayrollRunsRequest) returns (ListPayrollRunsResponse);
+  rpc GetPaySlip(GetPaySlipRequest) returns (PaySlip);
+
+  // Analytics
+  rpc GetHRDashboard(HRDashboardRequest) returns (HRDashboard);
+}
