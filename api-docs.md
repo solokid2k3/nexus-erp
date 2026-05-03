@@ -1,8 +1,8 @@
-# ERP System API Documentation
+# Nexus ERP API Documentation
 
 **Version**: 1.0
 
-Enterprise Resource Planning System API Gateway. Provides unified REST API access to Inventory, Order, Finance, and HR microservices.
+Nexus Enterprise Resource Planning System API Gateway. Provides unified REST API access to Inventory, Order, Finance, and HR microservices.
 
 ## User login
 **Endpoint**: `POST /api/v1/auth/login`

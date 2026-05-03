@@ -1,6 +1,6 @@
-# ERP System - Microservices Architecture
+# Nexus ERP - Microservices Architecture
 
-Enterprise Resource Planning system built with Go, Java, gRPC, PostgreSQL, and Redis.
+Nexus Enterprise Resource Planning system built with Go, Java, gRPC, PostgreSQL, and Redis.
 
 ## Architecture
 
