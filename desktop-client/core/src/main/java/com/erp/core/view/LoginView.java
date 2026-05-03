@@ -1,0 +1,171 @@
+package com.erp.core.view;
+
+import com.erp.core.auth.AuthService;
+import com.erp.core.component.LoadingSpinner;
+import javafx.animation.FadeTransition;
+import javafx.animation.ScaleTransition;
+import javafx.application.Platform;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.control.*;
+import javafx.scene.layout.*;
+import javafx.util.Duration;
+import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid;
+import org.kordamp.ikonli.javafx.FontIcon;
+
+import java.util.function.Consumer;
+
+public class LoginView extends StackPane {
+
+    private final AuthService authService = new AuthService();
+    private final Consumer<Void> onLoginSuccess;
+    private final String clientTitle;
+
+    public LoginView(String clientTitle, Consumer<Void> onLoginSuccess) {
+        this.clientTitle = clientTitle;
+        this.onLoginSuccess = onLoginSuccess;
+        getStyleClass().add("root-pane");
+        setAlignment(Pos.CENTER);
+        buildUI();
+    }
+
+    private void buildUI() {
+        var card = new VBox(20);
+        card.getStyleClass().add("card-elevated");
+        card.setMaxWidth(420);
+        card.setPadding(new Insets(48, 40, 40, 40));
+        card.setAlignment(Pos.CENTER);
+
+        // Lock icon
+        var lockIcon = new FontIcon(FontAwesomeSolid.SHIELD_ALT);
+        lockIcon.setIconSize(36);
+        lockIcon.setStyle("-fx-icon-color: #111111;");
+
+        var title = new Label(clientTitle);
+        title.getStyleClass().add("heading-1");
+
+        var subtitle = new Label("Sign in to your account");
+        subtitle.getStyleClass().add("body-muted");
+
+        var spacer = new Region();
+        spacer.setPrefHeight(8);
+
+        // Username field with icon
+        var userIcon = new FontIcon(FontAwesomeSolid.USER);
+        userIcon.setIconSize(14);
+        userIcon.setStyle("-fx-icon-color: #9CA3AF;");
+
+        var usernameField = new TextField();
+        usernameField.setPromptText("Username");
+        usernameField.setPrefHeight(44);
+
+        // Password field with icon
+        var passIcon = new FontIcon(FontAwesomeSolid.LOCK);
+        passIcon.setIconSize(14);
+        passIcon.setStyle("-fx-icon-color: #9CA3AF;");
+
+        var passwordField = new PasswordField();
+        passwordField.setPromptText("Password");
+        passwordField.setPrefHeight(44);
+
+        // Login button
+        var loginIcon = new FontIcon(FontAwesomeSolid.ARROW_RIGHT);
+        loginIcon.setIconSize(14);
+        loginIcon.setStyle("-fx-icon-color: #FFFFFF;");
+
+        var loginBtn = new Button("Sign In");
+        loginBtn.getStyleClass().add("button-primary");
+        loginBtn.setGraphic(loginIcon);
+        loginBtn.setPrefHeight(44);
+        loginBtn.setMaxWidth(Double.MAX_VALUE);
+
+        var errorLabel = new Label();
+        errorLabel.setStyle("-fx-text-fill: #DC2626; -fx-font-size: 13px;");
+        errorLabel.setVisible(false);
+        errorLabel.setManaged(false);
+
+        var spinner = new LoadingSpinner("Signing in...");
+        spinner.setVisible(false);
+        spinner.setManaged(false);
+
+        loginBtn.setOnAction(e -> {
+            var user = usernameField.getText().trim();
+            var pass = passwordField.getText().trim();
+            if (user.isEmpty() || pass.isEmpty()) {
+                showError(errorLabel, "Please enter username and password");
+                return;
+            }
+
+            loginBtn.setDisable(true);
+            loginBtn.setVisible(false);
+            loginBtn.setManaged(false);
+            spinner.setVisible(true);
+            spinner.setManaged(true);
+            errorLabel.setVisible(false);
+            errorLabel.setManaged(false);
+
+            authService.login(user, pass).thenAccept(success -> Platform.runLater(() -> {
+                resetButton(loginBtn, spinner);
+                if (success) {
+                    onLoginSuccess.accept(null);
+                } else {
+                    showError(errorLabel, "Invalid username or password");
+                }
+            })).exceptionally(ex -> {
+                Platform.runLater(() -> {
+                    resetButton(loginBtn, spinner);
+                    showError(errorLabel, "Connection error — is the backend running?");
+                });
+                return null;
+            });
+        });
+
+        passwordField.setOnAction(e -> loginBtn.fire());
+
+        // Demo hint
+        var hintIcon = new FontIcon(FontAwesomeSolid.INFO_CIRCLE);
+        hintIcon.setIconSize(12);
+        hintIcon.setStyle("-fx-icon-color: #9CA3AF;");
+
+        var demoHint = new Label("Demo: admin / admin123");
+        demoHint.setGraphic(hintIcon);
+        demoHint.getStyleClass().add("label-text");
+
+        card.getChildren().addAll(lockIcon, title, subtitle, spacer,
+                usernameField, passwordField, errorLabel, loginBtn, spinner, demoHint);
+
+        // Entry animation
+        card.setScaleX(0.95);
+        card.setScaleY(0.95);
+        card.setOpacity(0);
+
+        var fadeIn = new FadeTransition(Duration.millis(400), card);
+        fadeIn.setFromValue(0);
+        fadeIn.setToValue(1);
+
+        var scaleIn = new ScaleTransition(Duration.millis(400), card);
+        scaleIn.setFromX(0.95);
+        scaleIn.setFromY(0.95);
+        scaleIn.setToX(1.0);
+        scaleIn.setToY(1.0);
+
+        fadeIn.play();
+        scaleIn.play();
+
+        getChildren().add(card);
+    }
+
+    private void showError(Label errorLabel, String message) {
+        errorLabel.setText(message);
+        errorLabel.setVisible(true);
+        errorLabel.setManaged(true);
+    }
+
+    private void resetButton(Button loginBtn, LoadingSpinner spinner) {
+        loginBtn.setDisable(false);
+        loginBtn.setVisible(true);
+        loginBtn.setManaged(true);
+        spinner.setVisible(false);
+        spinner.setManaged(false);
+    }
+}

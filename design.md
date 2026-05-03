@@ -1,350 +1,269 @@
-# Design System Inspired by Shopify
+## Overview
 
-## 1. Visual Theme & Atmosphere
+Cal.com's marketing surface is a clean, friendly modern-SaaS interface — white canvas (`{colors.canvas}` — #ffffff) with black primary CTAs (`{colors.primary}` — #111111), custom **Cal Sans** display typography, and `{colors.surface-card}` (#f5f5f5) light-gray cards holding product UI fragments. The system reads as confidently engineered without trying to impress — every band has clear hierarchy, generous whitespace, and a single primary action.
 
-Shopify.com is a dark-first digital theatre — a website that stages its commerce platform like a cinematic premiere. The entire experience unfolds against an abyss of near-black surfaces that carry the faintest whisper of deep forest green (`#02090A`, `#061A1C`, `#102620`), creating a nocturnal atmosphere that feels less like a SaaS marketing page and more like an exclusive product reveal at a tech keynote. This darkness isn't cold or corporate — it's the warm, enveloping dark of a luxury experience, like sitting in the front row of a darkened auditorium.
+Type voice splits cleanly into two roles: **Cal Sans** (the brand's custom geometric display face — used for h1, h2, h3, and hero headlines) and **Inter** (used for everything else — body, buttons, nav, captions). Cal Sans uses weight 600 with negative letter-spacing (-0.5px to -2px depending on size) — it feels modern, slightly condensed, distinctly Cal.com.
 
-The typography is the undeniable star. NeueHaasGrotesk — a refined Helvetica descendant — appears at monumental scale (96px) with impossibly light weight (330-400), creating headlines that feel etched in light rather than printed in ink. The `ss03` OpenType feature gives letterforms a distinctive character that separates Shopify's type from generic Helvetica usage. Below the display layer, Inter Variable handles body text with surgical precision, using equally unusual variable weights (420, 450, 550) that live in the spaces between traditional weight stops. This precision signals a company that sweats every detail.
+Component voltage comes from **product UI fragments shown directly inside cards** — calendar widgets, scheduling forms, automation diagrams, integration tiles. Cal.com doesn't paint marketing illustrations of the product; it shows the actual product chrome at small scale embedded in the marketing flow.
 
-Color is used with extreme restraint. The primary accent is Shopify Neon Green (`#36F4A4`) — an electric mint that appears exclusively on focus rings and accent highlights, pulsing like a bioluminescent signal against the dark canvas. Softer green tints (Aloe `#C1FBD4`, Pistachio `#D4F9E0`) provide atmospheric washes. White is the only text color that matters on dark surfaces, while a zinc-based neutral scale (`#A1A1AA` through `#3F3F46`) handles the hierarchy of quiet information. The result is a design that makes commerce technology feel like it belongs in a science-fiction future.
+The footer flips to `{colors.surface-dark}` (#101010) — a deep near-black that visually closes every long-scroll page. The footer is the only dark surface in the system; everything above stays white-with-light-gray-cards.
 
 **Key Characteristics:**
-- Dark-first design with deep forest-teal undertones (not pure black)
-- Ultra-light display typography (weight 330) at monumental scale (96px) creating an ethereal presence
-- Neon Green (`#36F4A4`) as the singular high-energy accent against darkness
-- Full-pill buttons (9999px radius) as the primary interactive shape
-- Layered, multi-stage box shadows creating photographic depth
-- Product screenshots embedded in dark UI contexts, matching the surrounding darkness
-- Zinc-based neutral scale for text hierarchy — balanced between warm and cool
+- White canvas with black primary CTA (`{colors.primary}` — #111111). Buttons are `{rounded.md}` (8px) with confident weight-600 labels. Standard friendly-SaaS button.
+- Custom `Cal Sans` display typeface for headlines (substituted with Inter weight 600 here). Negative letter-spacing on display sizes — geometric, precise, slightly condensed.
+- Light-gray card surfaces (`{colors.surface-card}` — #f5f5f5) for feature cards, testimonials, and pricing tiers (non-featured). The featured pricing tier flips to `{colors.surface-dark}` (the only dark card on light pages).
+- Product UI fragments embedded directly in cards — Cal.com shows real schedule pickers, calendar widgets, integration grids inside its marketing cards. Brand voltage from real product chrome at small scale.
+- Nav-pill-group (`{component.nav-pill-group}`) — a small pill-radius wrapper around grouped nav segments (e.g., the sub-nav switcher between product views). The pill wrapper is one of the system's signature interactive components.
+- Avatars are circular (`{rounded.full}`), 36px diameter, used in testimonial rows and team-listing surfaces.
+- Footer is dark navy (`{colors.surface-dark}` — #101010) with light text (`{colors.on-dark-soft}` — #a1a1aa). The dark footer closes every page even though the body above is white.
+- Spacing rhythm is `{spacing.section}` (96px) between major bands — tight enough to feel modern-SaaS but generous enough to breathe.
+- Border radius is hierarchical: `{rounded.md}` (8px) for buttons + inputs, `{rounded.lg}` (12px) for content cards, `{rounded.xl}` (16px) for the hero app-mockup container, `{rounded.pill}` for nav-pill-group + badges, `{rounded.full}` for avatars + icon buttons.
 
-## 2. Color Palette & Roles
+## Colors
 
-### Primary
+### Brand & Accent
+- **Primary** (`{colors.primary}` — #111111): The dominant action color. All primary CTAs, h1/h2 display type. Press state shifts to `{colors.primary-active}` (#242424).
+- **Brand Accent** (`{colors.brand-accent}` — #3b82f6): Used sparely on inline links and on a small badge / "Customer story" highlight. Cal.com is a near-monochrome brand — the blue appears rarely.
+- **Badge Pastels** — A small pastel set for category badges and avatar fills: `{colors.badge-orange}` (#fb923c), `{colors.badge-pink}` (#ec4899), `{colors.badge-violet}` (#8b5cf6), `{colors.badge-emerald}` (#34d399). These appear on tag pills and small accent moments inside product UI fragments — never on hero CTAs.
 
-- **Shopify White** (`#FFFFFF`): Primary text on dark surfaces, button fills, high-contrast elements
-- **Shopify Black** (`#000000`): Body background, button text on white, maximum contrast base (--color-shade-100)
+### Surface
+- **Canvas** (`{colors.canvas}` — #ffffff): The default page floor.
+- **Surface Soft** (`{colors.surface-soft}` — #f8f9fa): Nav-pill-group background, very-soft section dividers.
+- **Surface Card** (`{colors.surface-card}` — #f5f5f5): Feature cards, testimonial cards, badge pills, default avatar fills.
+- **Surface Strong** (`{colors.surface-strong}` — #e5e7eb): Hairline border alternative; disabled button background.
+- **Surface Dark** (`{colors.surface-dark}` — #101010): The footer background — the only dark surface on every page. Also used for the featured pricing tier card.
+- **Surface Dark Elevated** (`{colors.surface-dark-elevated}` — #1a1a1a): Used for nested cards inside the dark footer or featured pricing card.
+- **Hairline** (`{colors.hairline}` — #e5e7eb): The 1px border tone on light surfaces. Used on input borders, table dividers, content card outlines (sometimes).
+- **Hairline Soft** (`{colors.hairline-soft}` — #f3f4f6): A barely-visible divider used between sections that share the white canvas.
 
-### Secondary & Accent
+### Text
+- **Ink** (`{colors.ink}` — #111111): All headlines and primary text.
+- **Body** (`{colors.body}` — #374151): Default running-text color.
+- **Muted** (`{colors.muted}` — #6b7280): Secondary text — sub-headings, breadcrumbs, footer body.
+- **Muted Soft** (`{colors.muted-soft}` — #898989): Tertiary text — captions, fine-print, copyright lines.
+- **On Primary / On Dark** (`{colors.on-primary}` / `{colors.on-dark}` — #ffffff): Text on primary buttons and dark footer.
+- **On Dark Soft** (`{colors.on-dark-soft}` — #a1a1aa): Footer body text — slightly muted white for the link rows.
 
-- **Neon Green** (`#36F4A4`): The signature accent — focus rings, interactive highlights, active state indicators. Electric and bioluminescent
-- **Aloe** (`#C1FBD4`): Soft green wash for decorative backgrounds, atmospheric cards (--color-aloe-10)
-- **Pistachio** (`#D4F9E0`): Lightest green tint for subtle surface differentiation (--color-pistachio-10)
+### Semantic
+- **Success** (`{colors.success}` — #10b981): Confirmation states, success badges in product UI.
+- **Warning** (`{colors.warning}` — #f59e0b): Warning callouts.
+- **Error** (`{colors.error}` — #ef4444): Validation errors.
 
-### Surface & Background
-
-- **Void** (`#000000`): Root page background — true black for maximum depth
-- **Deep Teal** (`#02090A`): Card surfaces, content containers — near-black with green undertone
-- **Dark Forest** (`#061A1C`): Section backgrounds with visible green character
-- **Forest** (`#102620`): Elevated dark surfaces, header backgrounds — the warmest dark shade
-- **Dark Card Border** (`#1E2C31`): Card borders on dark surfaces, subtle boundary definition
-
-### Neutrals & Text (Zinc Scale)
-
-- **Shade-30** (`#D4D4D8`): Lightest neutral, barely-there borders on dark (--color-shade-30)
-- **Muted Text** (`#A1A1AA`): Secondary text, metadata, descriptions — the quiet voice
-- **Shade-50** (`#71717A`): Tertiary text, timestamps, least important info (--color-shade-50)
-- **Shade-60** (`#52525B`): Disabled text, decorative neutrals (--color-shade-60)
-- **Shade-70** (`#3F3F46`): Subtle dividers, barely-visible UI boundaries (--color-shade-70)
-- **Light Border** (`#E4E4E7`): Borders on light surfaces (rare — only in light-mode modals)
-
-### Semantic & Accent
-
-- **Link Muted** (`#9797A2`): Muted link text with underline decoration
-- **Link Sage** (`#9DABAD`): Teal-tinted muted links
-- **Link Lavender** (`#BDBDCA`): Lighter link variant
-- **Link Mint** (`#99B3AD`): Green-tinted link variant for themed sections
-
-### Gradient System
-
-- **Dark Teal Wash**: Radial gradient from `#102620` center to `#02090A` edge — used behind product showcases
-- **Green Atmospheric**: Subtle green-tinted ambient gradients behind hero sections, creating depth without solid colors
-- **Spotlight**: Focused bright area fading to black — creates keynote-style presentation lighting
-
-## 3. Typography Rules
+## Typography
 
 ### Font Family
+The system runs **Cal Sans** for display + brand wordmark and **Inter** for everything else. Cal Sans is Cal.com's custom geometric display typeface — slightly condensed, weight 600, negative letter-spacing. Inter handles body, buttons, navigation, captions, and tabular code blocks. The fallback stack walks `-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif` for both families.
 
-**Display:** NeueHaasGrotesk (refined Helvetica descendant, variable font)
-- Fallbacks: Helvetica, Arial, sans-serif
-- OpenType features: `ss03` (stylistic set 3 — distinctive letterform alternates)
-- Available weights: 330, 360, 400, 500, 750 (variable)
-- Used for all headings, hero text, and large display elements
-
-**Body:** Inter-Variable
-- Fallbacks: Helvetica, Arial, sans-serif
-- OpenType features: `ss03`
-- Available weights: 400, 420, 450, 500, 550 (variable)
-- Used for body text, links, buttons, UI elements
-
-**Mono:** ui-monospace
-- Fallbacks: SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, Courier New
-- Used for code snippets, data labels, technical content
+The split is functional:
+- Cal Sans (display, 600 weight, -0.5 to -2px tracking) — h1, h2, h3
+- Inter (body + UI, 400-600 weight, 0 letter-spacing) — paragraphs, labels, buttons, nav
 
 ### Hierarchy
 
-| Role | Size | Weight | Line Height | Letter Spacing | Notes |
-|------|------|--------|-------------|----------------|-------|
-| Display XL | 96px | 400 | 1.00 | — | NeueHaasGrotesk, hero headlines, "ss03" |
-| Display XL Bold | 90.74px | 750 | 1.00 | 4.54px | NeueHaasGrotesk, emphasis display |
-| Display XL Tracked | 96px | 400 | 1.00 | 2.4px | NeueHaasGrotesk, spaced display |
-| Display Light | 96px | 330 | 0.96 | — | NeueHaasGrotesk, ethereal display |
-| Heading 1 | 70px | 330 | 1.00 | — | NeueHaasGrotesk, section titles |
-| Heading 2 | 55px | 330 | 1.16 | — | NeueHaasGrotesk, subsections |
-| Heading 3 | 48px | 330 | 1.14 | — | NeueHaasGrotesk, feature titles |
-| Heading 4 | 32px | 360 | 1.14 | 0.32px | NeueHaasGrotesk, card headings |
-| Heading 5 | 28px | 500 | 1.28 | 0.42px | NeueHaasGrotesk, small headings |
-| Heading 6 | 24px | 400 | 1.14 | 0.36px | NeueHaasGrotesk, minor headings |
-| Body Large | 20px | 500 | 1.40 | 0.3px | NeueHaasGrotesk / Inter, lead paragraphs |
-| Body | 18px | 400 | 1.56 | — | Inter-Variable, standard body |
-| Body Medium | 18px | 550 | 1.56 | — | Inter-Variable, emphasized body |
-| Body Small | 16px | 400 | 1.50 | — | Inter / NeueHaasGrotesk, compact body |
-| Body Small Medium | 16px | 420 | 1.50 | — | Inter-Variable, slightly emphasized |
-| Button | 16px | 400 | 1.50 | — | NeueHaasGrotesk, CTA text |
-| Nav Link | 18px | 500 | 1.25 | 0.72px | NeueHaasGrotesk, navigation items |
-| Caption | 14px | 500 | 1.49 | 0.28px | NeueHaasGrotesk / Inter, metadata |
-| Caption Medium | 14px | 550 | 1.49 | 0.28px | Inter-Variable, emphasized caption |
-| Overline | 15.36px | 400 | 1.50 | 1.54px | NeueHaasGrotesk, wide-tracked labels |
-| Micro | 13px | 500 | 1.50 | -0.13px | Inter, tight-tracked small text |
-| Label | 12px | 400 | 1.20 | 0.72px | Inter, uppercase labels |
-| Code | 16px | 400 | 1.50 | — | ui-monospace, uppercase, code blocks |
-| Code Small | 12px | 400 | 1.33 | — | ui-monospace, uppercase, inline code |
+| Token | Size | Weight | Line Height | Letter Spacing | Use |
+|---|---|---|---|---|---|
+| `{typography.display-xl}` | 64px | 600 | 1.05 | -2px | Homepage h1 ("The better way to schedule your meetings") — Cal Sans |
+| `{typography.display-lg}` | 48px | 600 | 1.1 | -1.5px | Section heads ("Your all-purpose scheduling app") — Cal Sans |
+| `{typography.display-md}` | 36px | 600 | 1.15 | -1px | Sub-section heads, card titles — Cal Sans |
+| `{typography.display-sm}` | 28px | 600 | 1.2 | -0.5px | CTA-band heads, pricing tier prices — Cal Sans |
+| `{typography.title-lg}` | 22px | 600 | 1.3 | -0.3px | Pricing plan names — Inter |
+| `{typography.title-md}` | 18px | 600 | 1.4 | 0 | Feature card titles, intro paragraphs |
+| `{typography.title-sm}` | 16px | 600 | 1.4 | 0 | Small card titles, list labels |
+| `{typography.body-md}` | 16px | 400 | 1.5 | 0 | Default running-text |
+| `{typography.body-sm}` | 14px | 400 | 1.5 | 0 | Footer body, fine-print |
+| `{typography.caption}` | 13px | 500 | 1.4 | 0 | Badge labels, captions |
+| `{typography.code}` | 14px | 400 | 1.5 | 0 | Code snippets, API examples — JetBrains Mono |
+| `{typography.button}` | 14px | 600 | 1.0 | 0 | Standard button labels |
+| `{typography.nav-link}` | 14px | 500 | 1.4 | 0 | Top-nav menu items |
 
 ### Principles
+Cal Sans is the brand voice — every display headline uses it. Inter handles the supporting type. The boundary is strict: never put body copy in Cal Sans, never put a display headline in Inter. Cal Sans without negative letter-spacing reads as off-brand — the -0.5 to -2px tracking is part of the voice.
 
-Shopify's typography is a masterclass in variable font precision. The display layer lives almost exclusively at weights 330-400 — featherweight text that appears to hover above the dark background like projected light. This is the opposite of the bold, heavy approach most SaaS sites take: where others shout, Shopify whispers at scale. The 96px headlines at weight 330 create a paradox of enormous size and delicate stroke that feels both monumental and fragile. The `ss03` OpenType feature activates a stylistic set that gives specific characters (likely 'a', 'g', and certain numerals) a more refined appearance, distinguishing Shopify's typography from standard Helvetica Neue usage. Inter Variable handles the body layer with surgical precision, using weights like 420 and 550 that exist between the traditional stops — every piece of text has exactly the visual weight it needs.
+Display weight stays at 600 across all sizes — never 700, never 500. The middle weight is what makes Cal Sans feel modern and confident without becoming bombastic.
 
-## 4. Component Stylings
+### Note on Font Substitutes
+If Cal Sans is unavailable, **Inter** at weight 600 with -0.04em letter-spacing is a usable approximation. The geometric character of Cal Sans differs from Inter's humanist forms, but the substitution preserves the weight + tracking signature. **Manrope** at weight 700 is another close alternative.
 
-### Buttons
-
-**Primary (White Fill)**
-- Background: White (`#FFFFFF`)
-- Text: Black (`#000000`)
-- Border: 2px solid transparent
-- Border radius: full pill (9999px)
-- Padding: 12px 26px 12px 16px (asymmetric — more right padding for visual balance)
-- Hover: slight opacity reduction or background shift
-- Focus: 2px `#36F4A4` (Neon Green) outline ring
-- Transition: all 200ms ease
-
-**Secondary (Ghost/Outlined)**
-- Background: transparent
-- Text: White (`#FFFFFF`)
-- Border: 2px solid White (`#FFFFFF`)
-- Border radius: full pill (9999px)
-- Padding: 12px 26px 12px 16px
-- Hover: fills to white bg with black text
-- Focus: 2px `#36F4A4` outline
-
-**Badge/Tag (Neutral Filled)**
-- Background: `rgba(255, 255, 255, 0.2)` (frosted glass)
-- Text: White (`#FFFFFF`)
-- Border: none
-- Border radius: subtly rounded (4px)
-- Padding: 12px 16px
-- Font: 16px regular
-
-### Cards & Containers
-
-- Background: Deep Teal (`#02090A`) on dark pages
-- Border: 1px solid `#1E2C31` (Dark Card Border) — barely visible boundary
-- Border radius: 8px for standard cards, 12px for featured cards, 20px 20px 0 0 for top-rounded cards
-- Shadow: Multi-layered system:
-  - Resting: `rgba(0,0,0,0.1) 0px 0px 0px 1px, rgba(0,0,0,0.1) 0px 2px 2px, rgba(0,0,0,0.1) 0px 4px 4px, rgba(0,0,0,0.1) 0px 8px 8px` + `rgba(255,255,255,0.03) 0px 1px 0px inset`
-  - The inset white highlight creates a subtle top-edge glow
-- Hover: shadow expands, card may slightly brighten
-- Transition: box-shadow 300ms ease, transform 200ms ease
-
-### Inputs & Forms
-
-- Background: transparent or Dark Forest (`#061A1C`)
-- Text: White (`#FFFFFF`)
-- Border: 1px solid `#3F3F46` (Shade-70)
-- Border radius: 8px
-- Padding: 12px 16px
-- Focus: 2px solid `#36F4A4` (Neon Green focus ring)
-- Placeholder: Shade-50 (`#71717A`)
-- Transition: border-color 200ms ease
-
-### Navigation
-
-- Background: transparent (overlaid on dark hero), becomes Forest (`#102620`) on scroll
-- Height: ~64px
-- Left: Shopify wordmark logo (SVG, white on dark)
-- Center/Right: nav links in 18px/500 NeueHaasGrotesk, white, letter-spacing 0.72px
-- CTA: White pill button "Start for free" (right)
-- Secondary CTA: Ghost button with white border
-- Hover: links shift to Muted Text (`#A1A1AA`) or gain underline
-- Mobile: hamburger menu, full-screen dark overlay
-- Transition: background 300ms ease on scroll
-
-### Image Treatment
-
-- Product screenshots: embedded in dark UI contexts, matching the surrounding darkness
-- Admin interface previews: shown on dark backgrounds with subtle card borders
-- Aspect ratios: varied — hero images are wide (16:9-ish), feature shots are flexible
-- All images sit flush within dark containers — no bright borders or frames
-- Lazy loading with dark placeholder surfaces
-
-### Trust Indicators
-
-- Statistics displayed prominently: "15+" (years), "150M+" (buyers)
-- Numbers at display scale in NeueHaasGrotesk
-- Partner/developer ecosystem callout sections
-- Dark-themed testimonials integrated into the page flow
-
-## 5. Layout Principles
+## Layout
 
 ### Spacing System
-
-Base unit: 8px
-
-| Token | Value | Use |
-|-------|-------|-----|
-| space-1 | 4px | Tight inline gaps |
-| space-2 | 8px | Base unit, icon gaps |
-| space-3 | 12px | Card padding, tight margins |
-| space-4 | 16px | Standard element padding |
-| space-5 | 24px | Card gaps, section padding |
-| space-6 | 28px | Medium section spacing |
-| space-7 | 32px | Section breaks |
-| space-8 | 36px | Large padding |
-| space-9 | 40px | Major section padding |
-| space-10 | 64px | Hero section padding, large gaps |
+- **Base unit:** 4px.
+- **Tokens:** `{spacing.xxs}` 4px · `{spacing.xs}` 8px · `{spacing.sm}` 12px · `{spacing.md}` 16px · `{spacing.lg}` 24px · `{spacing.xl}` 32px · `{spacing.xxl}` 48px · `{spacing.section}` 96px.
+- **Section padding:** `{spacing.section}` (96px) — the universal vertical rhythm between editorial bands.
+- **Card internal padding:** `{spacing.xl}` (32px) for feature cards and pricing tier cards; `{spacing.lg}` (24px) for testimonial and product-mockup cards.
+- **Gutters:** `{spacing.lg}` (24px) between cards in 3-up grids; `{spacing.md}` (16px) inside footer columns.
 
 ### Grid & Container
-
-- Max container width: ~1280px (centered)
-- Hero: full-width, edge-to-edge dark background with centered text
-- Feature sections: 2-column layouts with text and product screenshots
-- Stats sections: horizontal layout with large numbers
-- Horizontal padding: 64px desktop, 32px tablet, 16px mobile
-- Grid gap: 24-32px between major content blocks
+- **Max content width:** ~1200px centered on marketing pages.
+- **Editorial body:** Single 12-column grid; hero band often uses 7/5 split (h1 left, app mockup card right).
+- **Feature card grids:** 3-up at desktop, 2-up at tablet, 1-up at mobile.
+- **Pricing grid:** 4-up at desktop, 2-up at tablet, 1-up at mobile.
+- **Footer:** 4-column link list at desktop, wrapping to 2-up at tablet, 1-up at mobile.
 
 ### Whitespace Philosophy
+Cal.com uses generous but not excessive whitespace — section padding sits at 96px (modern-SaaS standard), and card internal padding stays at 32px. The rhythm is calibrated for fast scanning: every band has a single h1 + h2 + supporting cards, never densely packed lists. The result reads as confident-not-shouting.
 
-Shopify's whitespace strategy is theatrical. Sections are separated by vast expanses of dark space — 80px to 120px of pure black breathing room — that create the pacing of a presentation, not a webpage. Each content block is its own "slide" in a keynote-style scroll. Within sections, spacing is tighter and more deliberate, creating focal density against the expansive void. The contrast between macro-level emptiness and micro-level precision is what gives the site its cinematic cadence.
+## Elevation & Depth
+
+| Level | Treatment | Use |
+|---|---|---|
+| Flat | No shadow, no border | Body sections, top nav, hero bands |
+| Soft hairline | 1px `{colors.hairline}` border | Inputs, table dividers, occasionally on cards |
+| Card surface | `{colors.surface-card}` background — no shadow | Feature cards, testimonials |
+| Subtle drop shadow | Faint shadow at low alpha | Pricing tier cards, hover-elevated states (the system uses `0 1px 2px rgba(0,0,0,0.05)` and `0 4px 12px rgba(0,0,0,0.08)`) |
+| Featured tier | `{colors.surface-dark}` background, no shadow needed | The featured pricing tier inverts to dark surface — color contrast does the elevation work |
+
+The elevation philosophy is **soft and modern** — small drop shadows on elevated cards, color-block contrast for emphasis. No heavy shadows, no neumorphism, no glassmorphism.
+
+### Decorative Depth
+- Calendar widgets and product UI fragments embedded inside marketing cards carry their own internal shadows from the product UI itself — these are not system tokens, they're product chrome shown as content.
+- Avatar circles in testimonial sections sometimes carry pastel fill colors (`{colors.badge-orange}`, `{colors.badge-pink}`, etc.) — adds a small chromatic flourish without breaking the monochrome brand voice.
+
+## Shapes
 
 ### Border Radius Scale
 
-| Value | Context |
-|-------|---------|
-| 4px | Tags, badges, micro-elements |
-| 8px | Standard cards, inputs, video containers |
-| 12px | Featured cards, image containers, buttons (non-pill) |
-| 20px | Top-rounded cards (20px 20px 0 0), modal headers |
-| 340px | Large rounded decorative elements |
-| 9999px | Pill buttons, pill badges, nav elements |
+| Token | Value | Use |
+|---|---|---|
+| `{rounded.xs}` | 4px | Almost no use — reserved for badge accents |
+| `{rounded.sm}` | 6px | Small inline buttons, dropdown items |
+| `{rounded.md}` | 8px | Standard CTA buttons, text inputs, category tabs |
+| `{rounded.lg}` | 12px | Content cards (feature cards, testimonial cards, pricing tier cards) |
+| `{rounded.xl}` | 16px | Hero app-mockup card (a slightly larger radius for the marquee component) |
+| `{rounded.pill}` | 9999px | Nav-pill-group, badge pills |
+| `{rounded.full}` | 9999px / 50% | Avatars, icon buttons |
 
-## 6. Depth & Elevation
+### Photography Geometry
+Avatar photos use `{rounded.full}` (perfect circles) at 36px or 40px. Product UI fragments inside marketing cards retain their native chrome (which often has its own internal radii — e.g., calendar grid cells, button rows). Hero illustration zones use 16:9 or 4:3 ratios with `{rounded.xl}` corners.
 
-| Level | Treatment | Use |
-|-------|-----------|-----|
-| Base | No shadow, dark surface | Default page background |
-| Subtle | `rgba(0,0,0,0.1) 0px 0px 0px 1px` + inset white glow | Resting cards |
-| Medium | Multi-layer: 1px ring + 2px + 4px + 8px shadow stack | Elevated cards, featured sections |
-| High | `rgba(0,0,0,0.25) 0px 25px 50px -12px` | Modals, dropdowns, overlays |
-| Focus | `0px 0px 0px 2px #36F4A4` | Keyboard focus ring (Neon Green) |
+## Components
 
-Shopify's shadow system is unusually sophisticated. Rather than single-value shadows, cards use a stacked, multi-layer approach: a 1px ring for boundary definition, 2px/4px/8px progressive blurs for natural light falloff, and a delicate inset white glow (`rgba(255,255,255,0.03)`) that simulates a top-lit glass surface. On dark backgrounds, shadows darken from already-dark surfaces, so the shadows function more as "ambient occlusion" than traditional elevation — the card appears to sink slightly into the surface rather than float above it.
+### Top Navigation
 
-### Decorative Depth
+**`top-nav`** — White nav bar pinned to the top of every page. 64px tall, `{colors.canvas}` background. Carries the Cal.com wordmark + logo at left (the lowercase "Cal.com" with the brand circle), primary horizontal menu (Product, Solutions, Resources, Pricing, Enterprise) center, right-side cluster with "Sign in" text-link, "Sign up free" `{component.button-primary}`, and a sometimes-visible language selector. Menu items in `{typography.nav-link}` (Inter 14px / 500).
 
-- **Dark teal gradients**: Ambient radial washes behind hero sections and product showcases
-- **Spotlight effects**: Bright centered areas fading to black, creating keynote-style theatrical lighting
-- **Edge glow**: Subtle light colored edges on dark cards via inset box-shadow
-- **Green atmospheric halos**: Faint green tints in background gradients, echoing the brand accent
+**`nav-pill-group`** — A small pill-radius wrapper around 2-3 sub-nav segments (e.g., the product-mode switcher between "Personal" / "Teams" / "Enterprise"). Background `{colors.surface-soft}` with internal padding 6px, rounded `{rounded.pill}`. Active segment renders as a white-canvas pill with a subtle drop shadow inside the wrapper. The pill-in-pill treatment is one of Cal.com's signature interactive components.
 
-## 7. Do's and Don'ts
+### Buttons
+
+**`button-primary`** — The signature primary CTA. Background `{colors.primary}` (#111111), text `{colors.on-primary}`, type `{typography.button}` (Inter 14px / 600), padding 12px × 20px, height 40px, rounded `{rounded.md}` (8px). Active state `button-primary-active` shifts to `{colors.primary-active}` (#242424).
+
+**`button-secondary`** — White button with hairline outline. Background `{colors.canvas}`, text `{colors.ink}`, 1px hairline border, same padding + height + radius as primary.
+
+**`button-icon-circular`** — 36 × 36px circular icon button. Background `{colors.canvas}`, hairline border, ink-color icon. Used for share, "view more", carousel arrows.
+
+**`button-text-link`** — Inline text button, no background. Used for "Sign in" in the top nav and inline CTA links inside cards.
+
+**`text-link`** — Inline body links in `{colors.ink}` (the brand keeps inline links monochrome). Underlined on hover (not documented per the no-hover policy, but mentioned for context).
+
+### Cards & Containers
+
+**`hero-band`** — White-canvas hero with a 7-5 grid: h1 + sub-headline + button row on the left, `{component.hero-app-mockup-card}` on the right. Vertical padding `{spacing.section}` (96px).
+
+**`hero-app-mockup-card`** — A larger product-UI mockup card showing the actual Cal.com booking widget with calendar grid, time slots, and a primary "Confirm" button inside. Background `{colors.canvas}`, 1px hairline border, rounded `{rounded.xl}` (16px), subtle drop shadow. Used as the hero's right-side artifact.
+
+**`feature-card`** — Used in 3-up feature grids ("With us, appointment scheduling is easy"). Background `{colors.surface-card}` (#f5f5f5), rounded `{rounded.lg}` (12px), internal padding `{spacing.xl}` (32px). Carries a small icon at top, an `{typography.title-md}` headline, and a body description in `{typography.body-md}`.
+
+**`feature-icon-card`** — A simpler card variant used in 4-up feature grids on lower-density bands. Background `{colors.canvas}` with hairline border, rounded `{rounded.lg}`, padding `{spacing.lg}` (24px). Carries a small icon, `{typography.title-sm}` title, short description.
+
+**`product-mockup-card`** — A card showing actual Cal.com product UI fragments (workflow editor, calendar grid, integration grid, automation flow). Background `{colors.canvas}`, rounded `{rounded.lg}`, padding `{spacing.lg}` (24px). The product UI inside has its own internal chrome — these cards display the product, they don't decorate around it.
+
+**`testimonial-card`** — Used in customer-quote grids. Background `{colors.surface-card}`, rounded `{rounded.lg}`, padding `{spacing.lg}` (24px). Top row carries a `{component.avatar-circle}` + name + role; below sits the testimonial quote in `{typography.body-md}`.
+
+**`pricing-tier-card`** — Standard tier card. Background `{colors.canvas}`, rounded `{rounded.lg}`, padding `{spacing.xl}` (32px). Carries the plan name in `{typography.title-lg}`, price in `{typography.display-sm}`, feature checklist in `{typography.body-md}`, and a `{component.button-primary}` at the bottom.
+
+**`pricing-tier-card-featured`** — The featured tier (typically "Teams"). Background flips to `{colors.surface-dark}` (#101010), text inverts to `{colors.on-dark}`. The dark surface IS the featured-tier signal — no accent border, no badge, no scale shift.
+
+### Inputs & Forms
+
+**`text-input`** — Standard text input. Background `{colors.canvas}`, text `{colors.ink}`, type `{typography.body-md}`, rounded `{rounded.md}` (8px), padding 10px × 14px, height 40px. 1px hairline border in `{colors.hairline}`.
+
+**`text-input-focused`** — Focus state. Border thickens or shifts to `{colors.ink}` for emphasis.
+
+### Tags / Badges
+
+**`badge-pill`** — Small pill label used for category tags ("Product", "Article", "New") and pastel-fill avatar substitutes. Background `{colors.surface-card}` or one of the badge pastels (`{colors.badge-orange}`, `{colors.badge-pink}`, etc.), text `{colors.ink}`, type `{typography.caption}` (13px / 500), rounded `{rounded.pill}`, padding 4px × 12px.
+
+**`avatar-circle`** — 36px diameter, rounded `{rounded.full}`. Either holds a photo or a pastel fill with initials in `{typography.caption}`.
+
+**`rating-stars`** — Inline star rating in `{colors.badge-orange}` (#fb923c). Used near testimonial avatars to display a 5-star satisfaction score.
+
+### Tab / Filter
+
+**`category-tab`** + **`category-tab-active`** — Used inside the nav-pill-group. Inactive: transparent background, `{colors.muted}` text. Active: `{colors.canvas}` background, `{colors.ink}` text, subtle drop shadow inside the pill-group wrapper. Padding 8px × 14px, rounded `{rounded.md}`.
+
+### CTA / Footer
+
+**`cta-band-light`** — A pre-footer "Smarter, simpler scheduling" CTA card. Background `{colors.surface-card}`, rounded `{rounded.lg}`, padding `{spacing.xxl}` (48px). Carries an h2 in `{typography.display-sm}`, a sub-line, and a `{component.button-primary}` centered.
+
+**`footer`** — Dark navy footer that closes every page. Background `{colors.surface-dark}` (#101010), text `{colors.on-dark-soft}`. 4-column link list at desktop covering Product / Solutions / Company / Resources. Vertical padding 64px. The Cal.com wordmark sits at the top-left in `{colors.on-dark}`. The footer is the only dark surface on every page — the deliberate inversion visually closes the page.
+
+## Do's and Don'ts
 
 ### Do
-
-- Use the dark teal-black surface hierarchy (Void → Deep Teal → Dark Forest → Forest) for depth
-- Keep display typography at weight 330-400 — the ethereal lightness is the design's signature
-- Use Neon Green (`#36F4A4`) exclusively for focus states and critical accent highlights
-- Apply 9999px radius to all primary CTA buttons — the full pill is non-negotiable
-- Use the multi-layered shadow system for card elevation — single shadows look flat
-- Maintain the `ss03` OpenType feature across all text — it's part of the typographic identity
-- Use Inter Variable for body text and NeueHaasGrotesk for headings — never mix their roles
-- Create theatrical spacing between sections (80px+) for cinematic pacing
+- Reserve `{colors.primary}` (#111111) for primary CTAs and h1/h2 type. Cal.com's button is near-black, not blue.
+- Use Cal Sans for every display headline. Pair with Inter body. Never blur the boundary.
+- Apply negative letter-spacing on display sizes (-0.5 to -2px). Cal Sans without it reads as off-brand.
+- Use `{component.feature-card}` (light gray) and `{component.product-mockup-card}` (white with chrome) deliberately — the gray cards signal "abstract feature claim", white cards signal "look at the actual product".
+- Embed real product UI fragments inside marketing cards. Don't paint marketing illustrations of the product when you can show the product itself.
+- Keep avatar circles at 36px, perfect circles, sometimes with pastel fills. Avatars are the only place where badge pastels appear.
+- Use `{component.nav-pill-group}` for grouped sub-nav segments. The pill-in-pill treatment is signature.
+- End every page with the dark footer. The light-to-dark transition is part of the editorial rhythm.
 
 ### Don't
+- Don't use accent colors (`{colors.brand-accent}`, badge pastels) on primary CTAs. The system is monochrome at the action layer.
+- Don't bold display weight beyond 600. Cal Sans at 700 reads as bombastic.
+- Don't use rounded radius beyond `{rounded.xl}` (16px) on cards. Larger radii read as consumer-app, not professional booking software.
+- Don't put dark surface cards anywhere except the footer and the featured pricing tier. The dark surface is a deliberate, scarce signal.
+- Don't repeat the same surface mode in two consecutive bands. Cal.com's pacing alternates white → light-gray → white → product-mockup-card → white → dark-footer.
+- Don't add hover state styling beyond what the system already encodes — primary darkens on press; nothing else changes.
 
-- Don't use pure black (#000000) for text on dark backgrounds — use white (#FFFFFF) only
-- Don't introduce warm colors (orange, red, yellow) — the palette is strictly cool (greens, teals, neutrals)
-- Don't use font weights above 500 for NeueHaasGrotesk body text — heavy weights break the ethereal feel
-- Don't apply green accents to large surfaces — Neon Green is for small, precise highlights only
-- Don't use sharp corners (0px radius) on interactive elements — everything rounds
-- Don't add bright backgrounds — the dark theme is fundamental, not optional
-- Don't use single-layer box shadows — the stacked approach is the system
-- Don't set line-height above 1.56 for body text — Shopify's text is relatively compact
-- Don't mix NeueHaasGrotesk and Inter at the same size/role — their weight scales differ
-- Don't use letter-spacing below 0 for headings — Shopify headings track neutral or positive
-
-## 8. Responsive Behavior
+## Responsive Behavior
 
 ### Breakpoints
 
 | Name | Width | Key Changes |
-|------|-------|-------------|
-| Mobile | <640px | Single column, hamburger nav, display text scales to 48px, 16px padding |
-| Tablet | 640-1024px | 2-column grids begin, display text at 70px, 32px padding |
-| Desktop | 1024-1440px | Full layout, expanded nav, 96px display, 64px padding |
-| Large Desktop | >1440px | Max-width container centered, increased section spacing |
+|---|---|---|
+| Mobile | < 768px | Hamburger nav; hero h1 64→32px; hero-app-mockup-card stacks below content; feature grids 1-up; pricing 1-up; footer 4 cols → 1 |
+| Tablet | 768–1024px | Top nav stays horizontal but tightens; nav-pill-group wraps; feature cards 2-up; pricing 2-up |
+| Desktop | 1024–1440px | Full top-nav with all menu items; 3-up feature cards; 4-up pricing tiers |
+| Wide | > 1440px | Same as desktop with more outer breathing room; max content width caps at 1200px |
 
 ### Touch Targets
-
-- Minimum touch target: 44x44px (WCAG AAA)
-- Pill buttons: 48px height minimum with generous horizontal padding
-- Nav links: 44px touch area
-- Card surfaces: full card is tappable where linked
+- `{component.button-primary}` at minimum 40 × 40px.
+- `{component.button-icon-circular}` at exactly 36 × 36 — slightly under WCAG's 44 × 44 but the centered icon and full-circle silhouette compensate.
+- `{component.text-input}` height is 40px.
+- `{component.category-tab}` rendered inside nav-pill-group has 8 × 14 padding; effective tap area meets 44px+ with the surrounding pill.
 
 ### Collapsing Strategy
-
-- **Navigation**: Full horizontal links → hamburger menu below 1024px; logo and CTA button remain visible
-- **Hero section**: 96px display → 70px at tablet → 48px on mobile; maintains single-column center alignment
-- **Feature sections**: 2-column text+image → stacked single column below 768px
-- **Stats**: Horizontal row → stacked vertical on mobile
-- **Section padding**: 64px → 40px → 24px → 16px as viewport narrows
-- **Cards**: Grid → stack, maintaining full-width on mobile
+- Top nav collapses to hamburger at < 768px; menu opens as a full-screen sheet.
+- Hero band's 7-5 grid collapses to single-column on mobile — h1 + sub-head + buttons first, then the app-mockup card below.
+- Feature grids reduce columns rather than scaling cards down.
+- Pricing tier cards collapse 4 → 2 → 1; featured-tier dark surface stays visually distinct at every breakpoint.
+- Nav-pill-group wraps to multi-row on tablet if the segments don't fit horizontally.
+- Avatar + testimonial card layouts stay grid-aligned at every breakpoint.
 
 ### Image Behavior
+- Product UI fragments inside cards retain native aspect ratios; the cards themselves resize.
+- Avatar photos crop to circles at every breakpoint.
+- Hero app-mockup card scales proportionally on mobile — the calendar grid stays legible.
 
-- Product screenshots: responsive within dark containers, maintain aspect ratio
-- Hero images: full-width on all breakpoints, lazy loaded with dark placeholders
-- Admin UI previews: scale proportionally, may crop on mobile
-- All images use CDN (`cdn.shopify.com`) with responsive srcset
+## Iteration Guide
 
-## 9. Agent Prompt Guide
+1. Focus on ONE component at a time. Reference its YAML key directly (`{component.feature-card}`, `{component.pricing-tier-card-featured}`).
+2. Variants of an existing component (`-active`, `-disabled`, `-focused`) live as separate entries in `components:`.
+3. Use `{token.refs}` everywhere — never inline hex.
+4. Never document hover. Default and Active/Pressed states only.
+5. Display headlines stay Cal Sans 600 with negative letter-spacing. Body stays Inter 400. The trinity does not blur.
+6. The dark footer is the only dark surface on most pages. Don't add other dark cards casually.
+7. When in doubt about emphasis: bigger Cal Sans before bolder Cal Sans.
 
-### Quick Color Reference
+## Known Gaps
 
-- Primary CTA: Shopify White (`#FFFFFF`)
-- Page background: Void Black (`#000000`)
-- Card surface: Deep Teal (`#02090A`)
-- Section bg: Dark Forest (`#061A1C`)
-- Elevated bg: Forest (`#102620`)
-- Accent: Neon Green (`#36F4A4`)
-- Body text: White (`#FFFFFF`)
-- Muted text: Muted (`#A1A1AA`)
-- Border dark: Dark Card Border (`#1E2C31`)
-
-### Example Component Prompts
-
-- "Create a hero section on true black (#000000) background with a 96px/330 NeueHaasGrotesk headline in white, a 20px/500 subtitle in #A1A1AA, and two pill buttons: white filled (9999px radius) and ghost with 2px white border"
-- "Design a feature card on Deep Teal (#02090A) with 1px #1E2C31 border, 12px radius, multi-layer shadow (1px ring + 2px/4px/8px blur at 10% black), containing a 32px/360 white heading and 18px/400 #A1A1AA body text"
-- "Build a stats section on Dark Forest (#061A1C) with 96px/750 white numbers (NeueHaasGrotesk), 16px/400 #A1A1AA descriptive labels, and generous 64px spacing between stat blocks"
-- "Create a sticky nav with transparent background (becomes #102620 on scroll), white Shopify logo left, 18px/500 white nav links with 0.72px letter-spacing, and a white pill 'Start for free' button right"
-- "Design a tag/badge with rgba(255,255,255,0.2) frosted glass background, 4px radius, 12px 16px padding, white 16px text — floating over a dark card surface"
-
-### Iteration Guide
-
-When refining existing screens generated with this design system:
-1. Focus on ONE component at a time
-2. Reference specific color names and hex codes from this document
-3. Remember: this is a DARK-FIRST design — light surfaces are the exception, not the rule
-4. Display text should always feel feather-light (weight 330-400) — if it looks heavy, reduce the weight
-5. Neon Green (#36F4A4) is precious — use sparingly for focus and accent only
-6. The dark surface hierarchy (black → deep teal → dark forest → forest) creates subtle depth
-7. Shadows are multi-layered — a single `box-shadow` value won't capture the Shopify card feel
-8. `ss03` OpenType feature must be active on all text for typographic consistency
+- The dembrandt frequency analyzer captured `Buttons: 0 variants` — Cal.com renders most CTAs as styled `<a>` link elements rather than `<button>` tags, which dembrandt's button selector doesn't capture. Button styles are documented from screenshot ground-truth + standard Cal Sans / Inter baselines.
+- Cal Sans is licensed to Cal.com and not available as a public web font; substitutes are documented in the typography section.
+- The badge pastel set (orange / pink / violet / emerald) is documented from observed avatar fill colors; exact hex values may shift seasonally.
+- Animation and transition timings (calendar slot picker, schedule confirmation, integration grid hover-reveal) are not in scope.
+- Form validation states beyond `{component.text-input-focused}` are not extracted — error / success states would need a sign-up or booking flow to confirm.
+- The actual booking widget surface (cal.com/{username}) is the product, not a marketing surface; its spec is out of scope.
+- Avatar photos in testimonial sections sometimes carry pastel circular fills with initials instead of photographs; both treatments coexist on the same page.

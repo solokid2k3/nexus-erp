@@ -1,54 +1,43 @@
 plugins {
     java
-    application
-    id("org.openjfx.javafxplugin") version "0.1.0"
+    id("org.openjfx.javafxplugin") version "0.1.0" apply false
+    
 }
 
-group = "com.erp.desktop"
-version = "1.0.0-SNAPSHOT"
+subprojects {
+    apply(plugin = "java")
+    apply(plugin = "org.openjfx.javafxplugin")
+    
 
-java {
-    sourceCompatibility = JavaVersion.VERSION_21
-    targetCompatibility = JavaVersion.VERSION_21
-}
+    group = "com.erp.desktop"
+    version = "1.0.0"
 
-javafx {
-    version = "21.0.2"
-    modules("javafx.controls", "javafx.fxml")
-}
+    java {
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
+    }
 
-repositories {
-    mavenCentral()
-}
+    configure<org.openjfx.gradle.JavaFXOptions> {
+        version = "21.0.2"
+        modules("javafx.controls", "javafx.fxml")
+    }
 
-dependencies {
-    // JSON serialization
-    implementation("com.fasterxml.jackson.core:jackson-databind:2.17.2")
-    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.17.2")
+    repositories {
+        mavenCentral()
+    }
 
-    // Icons
-    implementation("org.kordamp.ikonli:ikonli-javafx:12.3.1")
-    implementation("org.kordamp.ikonli:ikonli-fontawesome5-pack:12.3.1")
-    implementation("org.kordamp.ikonli:ikonli-material2-pack:12.3.1")
+    dependencies {
+        "implementation"("com.fasterxml.jackson.core:jackson-databind:2.17.2")
+        "implementation"("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.17.2")
+        "implementation"("org.kordamp.ikonli:ikonli-javafx:12.3.1")
+        "implementation"("org.kordamp.ikonli:ikonli-fontawesome5-pack:12.3.1")
+        "implementation"("org.kordamp.ikonli:ikonli-material2-pack:12.3.1")
+        "implementation"("org.slf4j:slf4j-api:2.0.13")
+        "implementation"("ch.qos.logback:logback-classic:1.5.6")
+    }
 
-    // Logging
-    implementation("org.slf4j:slf4j-api:2.0.13")
-    implementation("ch.qos.logback:logback-classic:1.5.6")
-}
-
-application {
-    mainClass.set("com.erp.desktop.App")
-    mainModule.set("com.erp.desktop")
-}
-
-tasks.withType<JavaCompile> {
-    options.encoding = "UTF-8"
-}
-
-tasks.withType<Jar> {
-    manifest {
-        attributes(
-            "Main-Class" to "com.erp.desktop.App"
-        )
+    tasks.withType<JavaCompile> {
+        options.encoding = "UTF-8"
+        
     }
 }
