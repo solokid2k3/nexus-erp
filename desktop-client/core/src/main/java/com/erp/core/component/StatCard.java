@@ -35,7 +35,7 @@ public class StatCard extends VBox {
 
         var fontIcon = new FontIcon(icon);
         fontIcon.setIconSize(20);
-        fontIcon.setStyle("-fx-icon-color: " + accentColor + ";");
+        fontIcon.setIconColor(javafx.scene.paint.Paint.valueOf(accentColor));
 
         var iconContainer = new javafx.scene.layout.StackPane(iconBox, fontIcon);
         iconContainer.setMinSize(44, 44);

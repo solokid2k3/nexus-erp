@@ -40,7 +40,7 @@ public class LoginView extends StackPane {
         // Shield icon
         var lockIcon = new FontIcon(BytedanceIconsRegularMZ.SHIELD);
         lockIcon.setIconSize(36);
-        lockIcon.setStyle("-fx-icon-color: #111111;");
+        lockIcon.setIconColor(javafx.scene.paint.Paint.valueOf("#111111"));
 
         var title = new Label(clientTitle);
         title.getStyleClass().add("heading-1");
@@ -54,25 +54,37 @@ public class LoginView extends StackPane {
         // Username field with icon
         var userIcon = new FontIcon(BytedanceIconsRegularMZ.USER);
         userIcon.setIconSize(16);
-        userIcon.setStyle("-fx-icon-color: #9CA3AF;");
+        userIcon.setIconColor(javafx.scene.paint.Paint.valueOf("#9CA3AF"));
 
         var usernameField = new TextField();
         usernameField.setPromptText("Username");
         usernameField.setPrefHeight(44);
+        usernameField.setStyle("-fx-padding: 8 12 8 36;"); // Make room for icon
+        
+        var usernamePane = new StackPane();
+        StackPane.setAlignment(userIcon, Pos.CENTER_LEFT);
+        StackPane.setMargin(userIcon, new Insets(0, 0, 0, 12));
+        usernamePane.getChildren().addAll(usernameField, userIcon);
 
         // Password field with icon
         var passIcon = new FontIcon(BytedanceIconsRegularAL.LOCK);
         passIcon.setIconSize(16);
-        passIcon.setStyle("-fx-icon-color: #9CA3AF;");
+        passIcon.setIconColor(javafx.scene.paint.Paint.valueOf("#9CA3AF"));
 
         var passwordField = new PasswordField();
         passwordField.setPromptText("Password");
         passwordField.setPrefHeight(44);
+        passwordField.setStyle("-fx-padding: 8 12 8 36;"); // Make room for icon
+        
+        var passwordPane = new StackPane();
+        StackPane.setAlignment(passIcon, Pos.CENTER_LEFT);
+        StackPane.setMargin(passIcon, new Insets(0, 0, 0, 12));
+        passwordPane.getChildren().addAll(passwordField, passIcon);
 
         // Login button
         var loginIcon = new FontIcon(BytedanceIconsRegularAL.LOGIN);
         loginIcon.setIconSize(16);
-        loginIcon.setStyle("-fx-icon-color: #FFFFFF;");
+        loginIcon.setIconColor(javafx.scene.paint.Paint.valueOf("#FFFFFF"));
 
         var loginBtn = new Button("Sign In");
         loginBtn.getStyleClass().add("button-primary");
@@ -126,14 +138,14 @@ public class LoginView extends StackPane {
         // Demo hint
         var hintIcon = new FontIcon(BytedanceIconsRegularAL.ATTENTION);
         hintIcon.setIconSize(14);
-        hintIcon.setStyle("-fx-icon-color: #9CA3AF;");
+        hintIcon.setIconColor(javafx.scene.paint.Paint.valueOf("#9CA3AF"));
 
         var demoHint = new Label("Demo: admin / admin123");
         demoHint.setGraphic(hintIcon);
         demoHint.getStyleClass().add("label-text");
 
         card.getChildren().addAll(lockIcon, title, subtitle, spacer,
-                usernameField, passwordField, errorLabel, loginBtn, spinner, demoHint);
+                usernamePane, passwordPane, errorLabel, loginBtn, spinner, demoHint);
 
         // Entry animation
         card.setScaleX(0.95);

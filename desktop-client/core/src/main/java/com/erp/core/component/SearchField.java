@@ -25,7 +25,7 @@ public class SearchField extends StackPane {
 
         var searchIcon = new FontIcon(BytedanceIconsRegularMZ.SEARCH);
         searchIcon.setIconSize(15);
-        searchIcon.setStyle("-fx-icon-color: #9CA3AF;");
+        searchIcon.setIconColor(javafx.scene.paint.Paint.valueOf("#9CA3AF"));
 
         StackPane.setAlignment(searchIcon, javafx.geometry.Pos.CENTER_LEFT);
         StackPane.setMargin(searchIcon, new Insets(0, 0, 0, 12));

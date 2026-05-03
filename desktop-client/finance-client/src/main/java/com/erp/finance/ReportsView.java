@@ -39,7 +39,7 @@ public class ReportsView extends VBox {
         card.setPrefWidth(260);
         card.setAlignment(Pos.CENTER_LEFT);
 
-        var fi = new FontIcon(icon); fi.setIconSize(28); fi.setStyle("-fx-icon-color: " + color + ";");
+        var fi = new FontIcon(icon); fi.setIconSize(28); fi.setIconColor(javafx.scene.paint.Paint.valueOf(color));
         var label = new Label(name); label.getStyleClass().add("heading-3");
         var desc = new Label("Click to generate this report"); desc.getStyleClass().add("body-muted");
 

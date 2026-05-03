@@ -19,7 +19,7 @@ public class TaxView extends VBox {
 
         var icon = new FontIcon(BytedanceIconsRegularAL.CALCULATOR);
         icon.setIconSize(36);
-        icon.setStyle("-fx-icon-color: #6366F1;");
+        icon.setIconColor(javafx.scene.paint.Paint.valueOf("#6366F1"));
 
         var amountField = new TextField();
         amountField.setPromptText("Enter amount");

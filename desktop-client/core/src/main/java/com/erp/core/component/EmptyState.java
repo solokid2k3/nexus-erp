@@ -20,7 +20,7 @@ public class EmptyState extends VBox {
 
         var fontIcon = new FontIcon(icon);
         fontIcon.setIconSize(48);
-        fontIcon.setStyle("-fx-icon-color: #D1D5DB;");
+        fontIcon.setIconColor(javafx.scene.paint.Paint.valueOf("#D1D5DB"));
 
         var titleLabel = new Label(title);
         titleLabel.getStyleClass().add("empty-state-title");

@@ -40,7 +40,7 @@ public class MainShell extends BorderPane {
         headerBox.getStyleClass().add("sidebar-header");
         var appIconNode = new FontIcon(appIcon);
         appIconNode.setIconSize(22);
-        appIconNode.setStyle("-fx-icon-color: #111111;");
+        appIconNode.setIconColor(javafx.scene.paint.Paint.valueOf("#111111"));
         var titleRow = new HBox(10);
         titleRow.setAlignment(Pos.CENTER_LEFT);
         var titleLabel = new Label(appTitle);
@@ -72,7 +72,7 @@ public class MainShell extends BorderPane {
 
         var userIcon = new FontIcon(BytedanceIconsRegularMZ.USER);
         userIcon.setIconSize(20);
-        userIcon.setStyle("-fx-icon-color: #6B7280;");
+        userIcon.setIconColor(javafx.scene.paint.Paint.valueOf("#6B7280"));
 
         var nameRow = new HBox(8);
         nameRow.setAlignment(Pos.CENTER_LEFT);
@@ -87,7 +87,7 @@ public class MainShell extends BorderPane {
         logoutBtn.getStyleClass().add("logout-btn");
         var logoutIcon = new FontIcon(BytedanceIconsRegularAL.LOGOUT);
         logoutIcon.setIconSize(14);
-        logoutIcon.setStyle("-fx-icon-color: #DC2626;");
+        logoutIcon.setIconColor(javafx.scene.paint.Paint.valueOf("#DC2626"));
         logoutBtn.setGraphic(logoutIcon);
         logoutBtn.setOnAction(e -> {
             new AuthService().logout();

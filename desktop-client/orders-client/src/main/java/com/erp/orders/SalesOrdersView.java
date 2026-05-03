@@ -22,7 +22,7 @@ public class SalesOrdersView extends VBox {
         setSpacing(16);
         var title = new Label("Sales Orders"); title.getStyleClass().add("display-heading");
         var addBtn = new Button("New Order"); addBtn.getStyleClass().add("button-primary");
-        var ai = new FontIcon(BytedanceIconsRegularAL.ADD); ai.setIconSize(14); ai.setStyle("-fx-icon-color:#FFF;"); addBtn.setGraphic(ai);
+        var ai = new FontIcon(BytedanceIconsRegularAL.ADD); ai.setIconSize(14); ai.setIconColor(javafx.scene.paint.Paint.valueOf("#FFFFFF")); addBtn.setGraphic(ai);
         addBtn.setOnAction(e -> showCreate());
         var toolbar = new DataToolbar(new SearchField("Search orders..."), addBtn);
         var table = new TableView<>(items); VBox.setVgrow(table, Priority.ALWAYS);

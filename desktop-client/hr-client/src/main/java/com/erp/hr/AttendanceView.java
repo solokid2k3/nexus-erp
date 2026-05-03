@@ -26,7 +26,7 @@ public class AttendanceView extends VBox {
         var clockInBtn = new Button("Clock In");
         clockInBtn.getStyleClass().add("button-success");
         var ciIcon = new FontIcon(BytedanceIconsRegularAL.LOGIN);
-        ciIcon.setIconSize(14); ciIcon.setStyle("-fx-icon-color:#FFF;");
+        ciIcon.setIconSize(14); ciIcon.setIconColor(javafx.scene.paint.Paint.valueOf("#FFFFFF"));
         clockInBtn.setGraphic(ciIcon);
         clockInBtn.setOnAction(e -> ApiClient.getInstance()
             .post("/hr/attendance/clock-in", Map.of("employee_id", "self"))
@@ -35,7 +35,7 @@ public class AttendanceView extends VBox {
         var clockOutBtn = new Button("Clock Out");
         clockOutBtn.getStyleClass().add("button-danger");
         var coIcon = new FontIcon(BytedanceIconsRegularAL.LOGOUT);
-        coIcon.setIconSize(14); coIcon.setStyle("-fx-icon-color:#DC2626;");
+        coIcon.setIconSize(14); coIcon.setIconColor(javafx.scene.paint.Paint.valueOf("#DC2626"));
         clockOutBtn.setGraphic(coIcon);
         clockOutBtn.setOnAction(e -> ApiClient.getInstance()
             .post("/hr/attendance/clock-out", Map.of("employee_id", "self"))

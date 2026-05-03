@@ -7,6 +7,10 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
+import org.kordamp.ikonli.Ikon;
+import org.kordamp.ikonli.javafx.FontIcon;
+import org.kordamp.ikonli.bytedance.BytedanceIconsRegularAL;
+import org.kordamp.ikonli.bytedance.BytedanceIconsRegularMZ;
 
 public class Toast extends HBox {
 
@@ -43,12 +47,13 @@ public class Toast extends HBox {
         setMaxWidth(420);
         setSpacing(8);
 
-        String emoji = switch (type) {
-            case SUCCESS -> "✅";
-            case ERROR -> "❌";
-            case WARNING -> "⚠️";
-            case INFO -> "ℹ️";
+        Ikon icon = switch (type) {
+            case SUCCESS -> BytedanceIconsRegularAL.CHECK_ONE;
+            case ERROR -> BytedanceIconsRegularAL.CLOSE_ONE;
+            case WARNING -> BytedanceIconsRegularAL.ATTENTION;
+            case INFO -> BytedanceIconsRegularAL.INFO;
         };
+
         String borderColor = switch (type) {
             case SUCCESS -> "#10B981";
             case ERROR -> "#EF4444";
@@ -60,12 +65,13 @@ public class Toast extends HBox {
                 + "-fx-border-color: " + borderColor + "; -fx-border-width: 0 0 0 4; -fx-border-radius: 12; "
                 + "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 12, 0, 0, 4);");
 
-        var emojiLabel = new Label(emoji);
-        emojiLabel.setStyle("-fx-font-size: 16px;");
+        var fontIcon = new FontIcon(icon);
+        fontIcon.setIconSize(16);
+        fontIcon.setIconColor(javafx.scene.paint.Paint.valueOf(borderColor));
 
         var textLabel = new Label(message);
         textLabel.setStyle("-fx-text-fill: #374151; -fx-font-size: 14px; -fx-font-weight: 500;");
 
-        getChildren().addAll(emojiLabel, textLabel);
+        getChildren().addAll(fontIcon, textLabel);
     }
 }
