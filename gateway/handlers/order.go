@@ -2,17 +2,20 @@ package handlers
 
 import (
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/jackc/pgx/v5/pgxpool"
 	"google.golang.org/grpc"
 )
 
 type OrderHandler struct {
 	conn *grpc.ClientConn
+	pool *pgxpool.Pool
 }
 
-func NewOrderHandler(conn *grpc.ClientConn) *OrderHandler {
-	return &OrderHandler{conn: conn}
+func NewOrderHandler(conn *grpc.ClientConn, pool *pgxpool.Pool) *OrderHandler {
+	return &OrderHandler{conn: conn, pool: pool}
 }
 
 // CreateCustomer godoc
@@ -43,7 +46,26 @@ func (h *OrderHandler) CreateCustomer(c *gin.Context) {
 // @Success      200  {object}  map[string]interface{}
 // @Security     BearerAuth
 // @Router       /api/v1/orders/customers/{id} [get]
-func (h *OrderHandler) GetCustomer(c *gin.Context) { c.JSON(http.StatusOK, gin.H{"id": c.Param("id")}) }
+func (h *OrderHandler) GetCustomer(c *gin.Context) {
+	id := c.Param("id")
+	var code, company, contact, email, phone, city, country, status string
+	err := h.pool.QueryRow(c.Request.Context(), `
+		SELECT code, company_name, contact_name, email, phone, billing_city, billing_country, status 
+		FROM orders.customers WHERE id = $1`, id).Scan(
+		&code, &company, &contact, &email, &phone, &city, &country, &status,
+	)
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"success": false, "error": "Customer not found"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"success": true,
+		"data": map[string]interface{}{
+			"id": id, "code": code, "company_name": company, "contact_name": contact,
+			"email": email, "phone": phone, "billing_city": city, "billing_country": country, "status": status,
+		},
+	})
+}
 
 // ListCustomers godoc
 // @Summary      List all customers
@@ -52,7 +74,32 @@ func (h *OrderHandler) GetCustomer(c *gin.Context) { c.JSON(http.StatusOK, gin.H
 // @Success      200  {object}  map[string]interface{}
 // @Security     BearerAuth
 // @Router       /api/v1/orders/customers [get]
-func (h *OrderHandler) ListCustomers(c *gin.Context) { c.JSON(http.StatusOK, gin.H{"message": "List customers"}) }
+func (h *OrderHandler) ListCustomers(c *gin.Context) {
+	rows, err := h.pool.Query(c.Request.Context(), `
+		SELECT id, code, company_name, contact_name, email, phone, billing_city, billing_country, status 
+		FROM orders.customers ORDER BY created_at DESC LIMIT 50`)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"success": false, "error": err.Error()})
+		return
+	}
+	defer rows.Close()
+
+	var customers []map[string]interface{}
+	for rows.Next() {
+		var id, code, company, status string
+		var contact, email, phone, city, country *string
+		if err := rows.Scan(&id, &code, &company, &contact, &email, &phone, &city, &country, &status); err == nil {
+			customers = append(customers, map[string]interface{}{
+				"id": id, "code": code, "company_name": company, "contact_name": contact,
+				"email": email, "phone": phone, "billing_city": city, "billing_country": country, "status": status,
+			})
+		}
+	}
+	if customers == nil {
+		customers = []map[string]interface{}{}
+	}
+	c.JSON(http.StatusOK, customers)
+}
 
 // CreateOrder godoc
 // @Summary      Create a new sales order
@@ -91,7 +138,33 @@ func (h *OrderHandler) GetOrder(c *gin.Context) { c.JSON(http.StatusOK, gin.H{"i
 // @Success      200  {object}  map[string]interface{}
 // @Security     BearerAuth
 // @Router       /api/v1/orders/sales [get]
-func (h *OrderHandler) ListOrders(c *gin.Context) { c.JSON(http.StatusOK, gin.H{"message": "List orders"}) }
+func (h *OrderHandler) ListOrders(c *gin.Context) {
+	rows, err := h.pool.Query(c.Request.Context(), `
+		SELECT id, order_number, customer_id, status, total_amount_cents, created_at 
+		FROM orders.sales_orders ORDER BY created_at DESC LIMIT 50`)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"success": false, "error": err.Error()})
+		return
+	}
+	defer rows.Close()
+
+	var orders []map[string]interface{}
+	for rows.Next() {
+		var id, num, custID, status string
+		var total int64
+		var createdAt time.Time
+		if err := rows.Scan(&id, &num, &custID, &status, &total, &createdAt); err == nil {
+			orders = append(orders, map[string]interface{}{
+				"id": id, "order_number": num, "customer_id": custID, "status": status,
+				"total_amount_cents": total, "created_at": createdAt.Format("2006-01-02"),
+			})
+		}
+	}
+	if orders == nil {
+		orders = []map[string]interface{}{}
+	}
+	c.JSON(http.StatusOK, orders)
+}
 
 // UpdateOrderStatus godoc
 // @Summary      Update order status
@@ -152,7 +225,9 @@ func (h *OrderHandler) CreatePurchaseOrder(c *gin.Context) {
 // @Success      200  {object}  map[string]interface{}
 // @Security     BearerAuth
 // @Router       /api/v1/orders/purchase/{id} [get]
-func (h *OrderHandler) GetPurchaseOrder(c *gin.Context) { c.JSON(http.StatusOK, gin.H{"id": c.Param("id")}) }
+func (h *OrderHandler) GetPurchaseOrder(c *gin.Context) {
+	c.JSON(http.StatusOK, gin.H{"id": c.Param("id")})
+}
 
 // ListPurchaseOrders godoc
 // @Summary      List all purchase orders
@@ -161,7 +236,35 @@ func (h *OrderHandler) GetPurchaseOrder(c *gin.Context) { c.JSON(http.StatusOK, 
 // @Success      200  {object}  map[string]interface{}
 // @Security     BearerAuth
 // @Router       /api/v1/orders/purchase [get]
-func (h *OrderHandler) ListPurchaseOrders(c *gin.Context) { c.JSON(http.StatusOK, gin.H{"message": "List POs"}) }
+func (h *OrderHandler) ListPurchaseOrders(c *gin.Context) {
+	rows, err := h.pool.Query(c.Request.Context(), `
+		SELECT id, po_number, supplier_id, status, total_amount_cents, expected_delivery 
+		FROM orders.purchase_orders ORDER BY created_at DESC LIMIT 50`)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"success": false, "error": err.Error()})
+		return
+	}
+	defer rows.Close()
+
+	var pos []map[string]interface{}
+	for rows.Next() {
+		var id, num, supID, status string
+		var total int64
+		var expDate *time.Time
+		if err := rows.Scan(&id, &num, &supID, &status, &total, &expDate); err == nil {
+			var ed *string
+			if expDate != nil { s := expDate.Format("2006-01-02"); ed = &s }
+			pos = append(pos, map[string]interface{}{
+				"id": id, "po_number": num, "supplier_id": supID, "status": status,
+				"total_amount_cents": total, "expected_delivery_date": ed,
+			})
+		}
+	}
+	if pos == nil {
+		pos = []map[string]interface{}{}
+	}
+	c.JSON(http.StatusOK, pos)
+}
 
 // ReceivePurchaseOrder godoc
 // @Summary      Receive a purchase order
@@ -219,7 +322,32 @@ func (h *OrderHandler) GetSupplier(c *gin.Context) { c.JSON(http.StatusOK, gin.H
 // @Success      200  {object}  map[string]interface{}
 // @Security     BearerAuth
 // @Router       /api/v1/orders/suppliers [get]
-func (h *OrderHandler) ListSuppliers(c *gin.Context) { c.JSON(http.StatusOK, gin.H{"message": "List suppliers"}) }
+func (h *OrderHandler) ListSuppliers(c *gin.Context) {
+	rows, err := h.pool.Query(c.Request.Context(), `
+		SELECT id, code, company_name, contact_name, email, phone, city, country 
+		FROM orders.suppliers ORDER BY created_at DESC LIMIT 50`)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"success": false, "error": err.Error()})
+		return
+	}
+	defer rows.Close()
+
+	var suppliers []map[string]interface{}
+	for rows.Next() {
+		var id, code, company string
+		var contact, email, phone, city, country *string
+		if err := rows.Scan(&id, &code, &company, &contact, &email, &phone, &city, &country); err == nil {
+			suppliers = append(suppliers, map[string]interface{}{
+				"id": id, "code": code, "company_name": company, "contact_name": contact,
+				"email": email, "phone": phone, "city": city, "country": country,
+			})
+		}
+	}
+	if suppliers == nil {
+		suppliers = []map[string]interface{}{}
+	}
+	c.JSON(http.StatusOK, suppliers)
+}
 
 // GetOrderSummary godoc
 // @Summary      Get order summary dashboard

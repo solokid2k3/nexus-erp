@@ -44,6 +44,7 @@ services:
       - FINANCE_SERVICE_ADDR=finance-service:50053
       - HR_SERVICE_ADDR=hr-service:50054
       - REDIS_ADDR=redis:6379
+      - DATABASE_URL=postgres://erp_user:erp_secret_2025@postgres:5432/erp_db?sslmode=disable
       - JWT_SECRET=erp-jwt-secret-key-change-in-production
     depends_on:
       redis:

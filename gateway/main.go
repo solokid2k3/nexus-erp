@@ -15,6 +15,7 @@ import (
 	"erp-system/gateway/middleware"
 
 	"github.com/gin-gonic/gin"
+	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/redis/go-redis/v9"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
@@ -122,6 +123,19 @@ func main() {
 	}
 	log.Println("Connected to Redis")
 
+	// Database connection pool
+	poolCfg, err := pgxpool.ParseConfig(cfg.DatabaseURL)
+	if err != nil {
+		log.Fatalf("Failed to parse DB config: %v", err)
+	}
+	poolCfg.MaxConns = 20
+	pool, err := pgxpool.NewWithConfig(context.Background(), poolCfg)
+	if err != nil {
+		log.Fatalf("Failed to connect to DB: %v", err)
+	}
+	defer pool.Close()
+	log.Println("Connected to PostgreSQL")
+
 	// gRPC connections to downstream services
 	inventoryConn := dialGRPC(cfg.InventoryServiceAddr)
 	defer inventoryConn.Close()
@@ -136,10 +150,10 @@ func main() {
 	defer hrConn.Close()
 
 	// Initialize handlers
-	invHandler := handlers.NewInventoryHandler(inventoryConn)
-	orderHandler := handlers.NewOrderHandler(orderConn)
-	financeHandler := handlers.NewFinanceHandler(financeConn)
-	hrHandler := handlers.NewHRHandler(hrConn)
+	invHandler := handlers.NewInventoryHandler(inventoryConn, pool)
+	orderHandler := handlers.NewOrderHandler(orderConn, pool)
+	financeHandler := handlers.NewFinanceHandler(financeConn, pool)
+	hrHandler := handlers.NewHRHandler(hrConn, pool)
 
 	// Setup Gin router
 	gin.SetMode(gin.ReleaseMode)
@@ -179,7 +193,10 @@ func main() {
 			inv.GET("/categories", invHandler.ListCategories)
 
 			inv.POST("/warehouses", invHandler.CreateWarehouse)
+			inv.GET("/warehouses", invHandler.ListWarehouses)
+			inv.GET("/warehouses/:id", invHandler.GetWarehouse)
 
+			inv.GET("/stock", invHandler.ListStock)
 			inv.GET("/stock/:productId", invHandler.GetStockLevels)
 			inv.POST("/stock/adjust", invHandler.AdjustStock)
 			inv.POST("/stock/transfer", invHandler.TransferStock)
@@ -212,6 +229,9 @@ func main() {
 			ord.GET("/suppliers/:id", orderHandler.GetSupplier)
 
 			ord.GET("/summary", orderHandler.GetOrderSummary)
+
+			// Alias for desktop client compatibility
+			ord.GET("/purchases", orderHandler.ListPurchaseOrders)
 		}
 
 		// Finance
