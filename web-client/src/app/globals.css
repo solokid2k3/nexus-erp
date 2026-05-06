@@ -1,0 +1,175 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+@import "tailwindcss";
+
+:root {
+  /* Colors — kept for any custom overrides */
+  --color-primary: #111111;
+  --color-primary-active: #242424;
+  --color-canvas: #ffffff;
+  --color-surface-soft: #f8f9fa;
+  --color-surface-card: #f5f5f5;
+  --color-surface-strong: #e5e7eb;
+  --color-surface-dark: #101010;
+  --color-hairline: #e5e7eb;
+  --color-ink: #111111;
+  --color-body: #374151;
+  --color-muted: #6b7280;
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+body {
+  background-color: var(--color-canvas);
+  color: var(--color-body);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: 1.5;
+  font-size: 14px;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* ==========================================================================
+   Animations & Transitions (Phase 1)
+   ========================================================================== */
+:root {
+  --ease-smooth: cubic-bezier(0.25, 1, 0.5, 1);
+  --duration-fast: 150ms;
+  --duration-normal: 300ms;
+}
+
+/* Keyframes */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes pulse-subtle {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.8; transform: scale(0.98); }
+}
+
+/* Utility Classes */
+.animate-fade-in {
+  animation: fadeIn var(--duration-normal) var(--ease-smooth) forwards;
+}
+
+.animate-slide-up {
+  animation: slideUp var(--duration-normal) var(--ease-smooth) forwards;
+}
+
+.animate-shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--color-surface-card) 25%,
+    var(--color-surface-strong) 50%,
+    var(--color-surface-card) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite linear;
+}
+
+/* Global smooth transitions for interactive elements */
+button, a, input, select, .ant-menu-item {
+  transition: all var(--duration-fast) var(--ease-smooth);
+}
+
+/* ==========================================================================
+   Micro-Interaction Polish (Phase 6)
+   ========================================================================== */
+
+/* Smooth hover lift and shadow for Cards */
+.ant-card {
+  transition: transform var(--duration-fast) var(--ease-smooth),
+              box-shadow var(--duration-fast) var(--ease-smooth) !important;
+}
+
+.ant-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05) !important;
+}
+
+/* Smooth button press-down effect */
+.ant-btn:active {
+  transform: scale(0.97);
+}
+
+/* Sidebar active indicator animation */
+.ant-menu-light.ant-menu-root.ant-menu-inline {
+  border-right: none !important;
+}
+
+.ant-menu-item {
+  margin-top: 4px !important;
+  margin-bottom: 4px !important;
+  border-radius: 6px !important;
+  width: calc(100% - 16px) !important;
+  margin-left: 8px !important;
+  transition: all var(--duration-fast) var(--ease-smooth) !important;
+}
+
+.ant-menu-item-selected {
+  background-color: var(--color-surface-strong) !important;
+  color: var(--color-primary) !important;
+  font-weight: 500;
+}
+
+.ant-menu-item-selected::after {
+  content: '';
+  position: absolute;
+  left: -8px;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 60%;
+  width: 4px;
+  background-color: var(--color-primary);
+  border-radius: 0 4px 4px 0;
+  opacity: 0;
+  animation: slideInLeft var(--duration-normal) var(--ease-smooth) forwards;
+  border-right: none !important;
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translate(-100%, -50%);
+  }
+  to {
+    opacity: 1;
+    transform: translate(0, -50%);
+  }
+}
+
+/* TopNav smooth tab underline is part of Ant Menu, but we can enhance it if needed */
+.ant-menu-horizontal {
+  border-bottom: none !important;
+  background: transparent !important;
+}
+
+.ant-menu-horizontal > .ant-menu-item::after {
+  transition: border-bottom-color var(--duration-fast) var(--ease-smooth) !important;
+}
